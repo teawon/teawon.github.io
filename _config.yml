@@ -23,14 +23,14 @@ name: "teawon"
 description: "공부 & 개발 내용 기록 블로그"
 url: "https://teawon.github.io"
 baseurl: # the subpath of your site, e.g. "/blog"
-repository: # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
+repository: "teawon/blog-comments"
 teaser: # path of fallback teaser image, e.g. "/assets/images/500x300.png"
 logo: "/assets/images/logo.png" ## path of logo image to display in the masthead, e.g. "/assets/images/88x88.png"
 masthead_title: # overrides the website title displayed in the masthead, use " " for no title
 # breadcrumbs            : false # true, false (default)
 words_per_minute: 200
 comments:
-  provider: # false (default), "disqus", "discourse", "facebook", "staticman", "staticman_v2", "utterances", "giscus", "custom"
+  provider: "utterances" # false (default), "disqus", "discourse", "facebook", "staticman", "staticman_v2", "utterances, "giscus", "custom"
   disqus:
     shortname: # https://help.disqus.com/customer/portal/articles/466208-what-s-a-shortname-
   discourse:
@@ -41,8 +41,8 @@ comments:
     num_posts: # 5 (default)
     colorscheme: # "light" (default), "dark"
   utterances:
-    theme: # "github-light" (default), "github-dark"
-    issue_term: # "pathname" (default)
+    theme: "photon-dark" # "github-light" (default), "github-dark"
+    issue_term: "pathname" # "pathname" (default)
   giscus:
     repo_id: # Shown during giscus setup at https://giscus.app
     category_name: # Full text name of the category
@@ -106,7 +106,7 @@ author:
   name: "teawon"
   avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJ34ze16z6XygeCsXiKb32kdaeQeYJuaPXHQ&usqp=CAU"
   bio: "공부 & 개발 내용 기록 블로그입니다."
-  location: "Korea"
+  location: "South Korea"
   email: "xodnjsvkvk9@gmail.com"
   links:
     - label: "Email"
