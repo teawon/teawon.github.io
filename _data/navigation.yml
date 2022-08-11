@@ -1,0 +1,8 @@
+# main links
+main:
+  - title: "Home"
+    url: "/"
+  - title: "Category"
+    url: "/Category/"
+  - title: "Archive"
+    url: "/Archive"
