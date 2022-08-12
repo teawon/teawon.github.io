@@ -15,8 +15,7 @@
         <span class="nav__sub-title">Frontend</span>
            
             <ul>
-                <!--Cpp 카테고리 글들을 모아둔 페이지인 /categories/cpp 주소의 글로 링크 연결-->
-                <!--category[1].size 로 해당 카테고리를 가진 글의 개수 표시--> 
+             
                 {% for category in site.categories %}
                     {% if category[0] == "React" %}
                         <li><a href="/categories/react" class="">React ({{category[1].size}})</a></li>
@@ -25,7 +24,24 @@
             </ul>
           
         <span class="nav__sub-title">Backend</span>
+             <ul>
+             
+                {% for category in site.categories %}
+                    {% if category[0] == "Spring" %}
+                        <li><a href="/categories/spring" class="">Spring ({{category[1].size}})</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
         <span class="nav__sub-title">Algorithm</span>
+        <span class="nav__sub-title">ETC</span>
+        <ul>
+             
+                {% for category in site.categories %}
+                    {% if category[0] == "Etc" %}
+                        <li><a href="/categories/etc" class="">Etc ({{category[1].size}})</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
            
       </li>
   </ul>
