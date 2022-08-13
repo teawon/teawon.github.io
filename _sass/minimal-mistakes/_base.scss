@@ -337,3 +337,8 @@ input[type="submit"],
   -webkit-transition: $global-transition;
   transition: $global-transition;
 }
+
+.center {
+  display: block;
+  margin: auto;
+}
