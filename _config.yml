@@ -280,3 +280,10 @@ defaults:
       share: true
       related: false
       sidebar_main: true
+
+markdown: kramdown
+kramdown:
+    highlighter: rouge
+    syntax_highlighter_opts:
+        block:
+            line_numbers: true
