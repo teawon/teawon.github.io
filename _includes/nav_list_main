@@ -37,8 +37,8 @@
         <ul>
              
                 {% for category in site.categories %}
-                    {% if category[0] == "Etc" %}
-                        <li><a href="/categories/etc" class="">Etc ({{category[1].size}})</a></li>
+                    {% if category[0] == "Blog" %}
+                        <li><a href="/categories/blog" class="">Blog ({{category[1].size}})</a></li>
                     {% endif %}
                 {% endfor %}
             </ul>
