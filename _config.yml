@@ -280,6 +280,7 @@ defaults:
       share: true
       related: false
       sidebar_main: true
+      future: true
 
 markdown: kramdown
 kramdown:
