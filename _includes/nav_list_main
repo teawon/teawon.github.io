@@ -33,6 +33,24 @@
                 {% endfor %}
             </ul>
         <span class="nav__sub-title">Algorithm</span>
+        <ul>
+             
+            {% for category in site.categories %}
+                {% if category[0] == "Java" %}
+                    <li><a href="/categories/java" class="">Java ({{category[1].size}})</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+        <ul>
+            {% for category in site.categories %}
+                {% if category[0] == "Question" %}
+                    <li><a href="/categories/question" class="">Question ({{category[1].size}})</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+            
+
         <span class="nav__sub-title">ETC</span>
         <ul>
              
