@@ -8,8 +8,8 @@ toc: true
 toc_sticky: true
 toc_label: "목차"
 
-date: 2022-10-13
-last_modified_at: 2022-10-13
+date: 2022-10-12
+last_modified_at: 2022-10-12
 ---
 
 ## 개요
@@ -80,4 +80,5 @@ Kotlin이란 2011년 JetBrains에서 공개한 JVM기반의 오픈 소스 프로
 ## 참고 자료
 
 [https://pearlluck.tistory.com/701](https://pearlluck.tistory.com/701)
+
 [https://velog.io/@kjy991/Kotlin..](https://velog.io/@kjy991/Kotlin-%EC%9D%98-%EC%9E%A5%EC%A0%90-%EB%B0%8F-%EB%8B%A8%EC%A0%90)
