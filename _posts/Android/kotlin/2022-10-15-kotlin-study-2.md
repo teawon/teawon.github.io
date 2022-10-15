@@ -8,8 +8,8 @@ toc: true
 toc_sticky: true
 toc_label: "목차"
 
-date: 2022-10-15
-last_modified_at: 2022-10-15
+date: 2022-10-15 +0900
+last_modified_at: 2022-10-15 +0900
 ---
 
 ## 함수
