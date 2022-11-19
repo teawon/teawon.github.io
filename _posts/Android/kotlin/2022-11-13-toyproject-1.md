@@ -5,6 +5,8 @@ categories:
   - Kotlin
 tags:
   - Ktor
+  - Coroutine
+  - Jetpack Compose
 
 toc: true
 toc_sticky: true
@@ -554,3 +556,5 @@ fun ItemRow(item: ProductInfoDto) { //각 상품에 대한 설명
 [Stevdza-San-youtube](https://www.youtube.com/watch?v=3oXBnM6fZj0)
 
 [Medium](https://medium.com/hongbeomi-dev/suspend-%ED%95%9C%EC%A0%95%EC%9E%90-%EB%82%B4%EB%B6%80-%EB%8F%99%EC%9E%91-55d2dc819044)
+
+[devowen.com](https://devowen.com/457)
