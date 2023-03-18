@@ -1,4 +1,4 @@
----
+<!-- ---
 title: "Javascript 문법 정리"
 
 categories:
@@ -22,6 +22,8 @@ last_modified_at: 2022-03-13
 
 1. const와 let의 차이가있을까?
 2. 그래서 어떤걸 주로 쓰지?
+3. answer.reduce??
+4. sort할때 왜 a,b인자값을 넣어야하는가?
 
 ## 1. 반복문
 
@@ -30,8 +32,6 @@ last_modified_at: 2022-03-13
 ```javascript
 
 const array= ['a','b','c','d'];
-
-
 
 //1. 기본
 
@@ -98,11 +98,47 @@ console.log("ABc".toLowerCase()); // abc
 
 // 1. charAt()  [특정 요소에 접근]
 
-console.log("abc".charAt(0)); // a
+const value = "012345";
 
-// 2. substring(시작 , 끝-1) [문자열 자르기]
+console.log(value.charAt(0)); // 0
 
-console.log("012345".subString(3));  // "45"
-console.log("012345".subString(3,6); // "45"
+// 2. substring(시작 index , 끝 index - 1) [문자열 자르기]
+
+console.log(value.subString(3));  // "345"
+console.log(value.subString(3,value.length); // "345"
 
 ```
+
+## 4. 정렬
+
+```javascript
+// 1. sort( )
+/*
+- 파라메터가 없다면 "유니코드" 순으로 정렬합니다 (문자열 정렬의 경우 그냥 사용해도 O)
+*/
+const array = [
+  {
+    student: "people1",
+    score: 100,
+  },
+  {
+    student: "people2",
+    score: 99,
+  },
+];
+
+// 1.1 (오름차순)
+array.sort(function (a, b) {
+  //99 , 100
+  return a.score - b.score;
+});
+
+// 1.2 (내림차순)
+array.sort(function (a, b) {
+  //100 , 99
+  return b.score - a.score;
+});
+
+
+```
+## 5. 배열의 특정 요소 삭제 -->
