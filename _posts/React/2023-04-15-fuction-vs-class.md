@@ -181,7 +181,7 @@ function FunctionComponent(props) {
 
 사실 정해진 정답은 없지만 현재 개발추세에 따르면 많은 개발자들은 <span style="color:red">함수형 컴포넌트 + Hook</span> 기반의 작성방식을 주로 사용하고 있습니다.
 
-실제 React 공식홈페이지에서도 16.8버전 이후 Hook기능이 추가됨에 따라 함수 컴포넌트를 권장하고 있으며 그 이유는 아래와 같습니다
+실제 React 공식홈페이지에서도 16.8버전 이후 <span style="color:red">Hook</span>기능이 추가됨에 따라 함수 컴포넌트를 권장하고 있으며 그 이유는 아래와 같습니다
 
 1. React Hook에서는 독립적인 재사용으로 인해 클래스형 컴포넌트의 고차원 컴포넌트 패턴을 강제하지 않음
 
@@ -228,7 +228,18 @@ class Timer {
 
 (처음 React공부를 할때 찾았던 예제코드가 클래스기반의 코드내용이라 함수형으로 바꾸는데 애먹었던 기억이 나네요 😅)
 
+### 6.1 Hook?
+
+결국 Hook의 등장으로 함수형 컴포넌트의 사용이 권장되었다는데 Hook이란 무엇일까요?
+
+React Hook은 React 16.8 버전에서 도입된 기능으로, 함수형 컴포넌트에서도 상태 관리와 라이프사이클 기능을 사용할 수 있게 해주는 API입니다.
+
+Hook을 사용하면 이전에는 클래스형 컴포넌트에서만 가능했던 상태 관리와 라이프사이클 메소드를 함수형 컴포넌트에서도 사용할 수 있으며 코드의 재사용성과 가독성을 높일 수 있기때문에 React 개발 트렌드는 함수형 컴포넌트와 Hook을 중심으로 이동하고 있습니다.
+
+종류로는 `useState, useEffect, useContext, useReducer , useCallback, useMemo` 등등이 있습니다.
+
 ## 참고자료
 
-(https://born-dev.tistory.com/27)[https://born-dev.tistory.com/27]
-(https://fromnowwon.tistory.com/entry/react-class-functional?category=1021171)[https://fromnowwon.tistory.com/entry/react-class-functional?category=1021171]
+[https://born-dev.tistory.com/27](https://born-dev.tistory.com/27)
+
+[https://fromnowwon.tistory.com/entry/react-class-functional?category=1021171](https://fromnowwon.tistory.com/entry/react-class-functional?category=1021171)
