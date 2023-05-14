@@ -1,0 +1,7 @@
+bundle exec jekyll serve  // 서버 실행
+
+[주소에 대한 설명](http://www.google.co.kr) // 주소 삽입
+
+![image](url){: .center}{: width="300" height="400"} // 이미지 정렬 + 크기조절
+
+<span style="color:red">text</span> // 색 효과 적용
