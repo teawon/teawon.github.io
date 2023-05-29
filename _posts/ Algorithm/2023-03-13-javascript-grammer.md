@@ -1,4 +1,4 @@
-<!-- ---
+---
 title: "Javascript 문법 정리"
 
 categories:
@@ -14,16 +14,12 @@ last_modified_at: 2022-03-13
 
 ## 개요
 
-코테 준비 언어를 자바스크립트로 변경하였습니다. 기업에 따라 자바스크립트 언어를 보는 곳이 늘어났다는 첫번째 이유와 실제 현업에서 사용하는 언어를 능숙하게 다루는게 더 효과적인 공부방식이라고 생각했기때문입니다.
-
-...진작 바꿨어야했는데 ㅜㅜ..
-
 본 글은 알고리즘을 풀이하기 위해 정리한 자바스크립트의 문법 정리 글 입니다.
 
-1. const와 let의 차이가있을까?
+<!-- 1. const와 let의 차이가있을까?
 2. 그래서 어떤걸 주로 쓰지?
 3. answer.reduce??
-4. sort할때 왜 a,b인자값을 넣어야하는가?
+4. sort할때 왜 a,b인자값을 넣어야하는가? -->
 
 ## 1. 반복문
 
@@ -138,7 +134,47 @@ array.sort(function (a, b) {
   //100 , 99
   return b.score - a.score;
 });
+```
+
+## 5. 배열
+
+```
+
+// 1. shift( )
+/*
+- shift() 메소드는 배열에서 첫 번째 요소를 제거하고 그 요소를 반환합니다
+- 이 연산을 수행하면 배열의 크기가 줄어들게 됩니다.
+*/
+
+let arr = [1, 2, 3, 4, 5];
+let firstElement = arr.shift(); // returns 1, arr is now [2, 3, 4, 5]
+
+// 2. pop( )
+/*
+- pop() 메소드는 배열에서 마지막 요소를 제거하고 그 요소를 반환합니다.
+- 이 연산을 수행하면 배열의 크기가 줄어들게 됩니다.
+*/
+let lastElement = arr.pop(); // returns 5, arr is now [1, 2, 3, 4]
+
+// 3. push( )
+/*
+- push() 메소드는 배열의 끝에 하나 이상의 요소를 추가하고, 새로운 길이를 반환합니다.
+*/
+arr.push(6); // returns 5, arr is now [1, 2, 3, 4, 6]
+
+// unshift( )
+/*
+- unshift() 메소드는 배열의 앞쪽에 하나 이상의 요소를 추가하고, 새로운 길이를 반환합니다.
+*/
+arr.unshift(0); // returns 6, arr is now [0, 1, 2, 3, 4, 6]
+
+// Array(length)
+/*
+- Array() 생성자는 주어진 length 만큼의 길이를 가진 새로운 배열을 생성합니다.
+- 생성된 배열의 각 요소는 undefined입니다.
+*/
+let newArr = Array(5); // newArr is [undefined, undefined, undefined, undefined, undefined]
+
 
 
 ```
-## 5. 배열의 특정 요소 삭제 -->
