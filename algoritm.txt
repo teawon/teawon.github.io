@@ -1,0 +1,10 @@
+https://leetcode.com/problems/shortest-path-with-alternating-colors/submissions/?envType=study-plan-v2&envId=graph-theory 
+- BFS문제
+
+  for(const [start, end] of redEdges){
+        redGraph[start][end] = true;
+  }
+
+-> 이런 구조할당 방식으로 코드를 깔끔하게 짤 수 있다.
+
+-> BFS에서 연결리스트 방식으로 처리해야 더 

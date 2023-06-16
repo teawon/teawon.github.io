@@ -19,7 +19,8 @@ last_modified_at: 2022-03-13
 <!-- 1. const와 let의 차이가있을까?
 2. 그래서 어떤걸 주로 쓰지?
 3. answer.reduce??
-4. sort할때 왜 a,b인자값을 넣어야하는가? -->
+4. sort할때 왜 a,b인자값을 넣어야하는가?
+5. Number.MAX_SAFE_INTEGER 차이 ? -->
 
 ## 1. 반복문
 
