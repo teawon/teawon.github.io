@@ -9,7 +9,7 @@ toc_sticky: true
 toc_label: "목차"
 
 date: 2023-09-01
-last_modified_at: 2023-09-01
+last_modified_at: 2023-09-04
 ---
 
 # 3장 홈페이지 최적화
@@ -507,6 +507,165 @@ Data-URL은 웹 리소스를 URL 문자열로 직접 내장하는 방식을 의�
 
 > 실제 네트워크 트래픽으로 인식할 뿐 별도의 다운로드 시간이 걸리지 않는다
 
+<br>
+## 3.4 캐시 최적화
+
+<img src="https://github.com/Meet-the-past/docker/assets/78795820/22f08fdf-5ea6-4bbb-83bf-58818a799017" alt="캐시 최적화" width="400" />
+
+- 문제 상황 : lighthouse를 통해 분석한 결과, 캐시 적용이 필요하다는 경고가 발생하고있다.
+- 목표 : 캐시의 개념을 이해하고, 적절한 캐시 설정을 적용하기 (노드서버에서)
+
+**[캐시]**
+
+- 메모리 캐시
+  - RAM (랜덤 액세스 메모리)에 저장하는 캐시
+  - RAM은 빠른 속도로 데이터에 접근할 수 있기 때문에, 자주 사용되는 자원들을 메모리 캐시에 저장
+  - 브라우저를 종료하면 사라진다
+- 디스크 캐시
+
+  - 웹 페이지의 자원을 하드 드라이브나 SSD와 같은 영구 저장 매체에 저장하는 캐시
+  - 브라우저를 종료해도 저장된 데이터는 유지
+
+> 캐시는 브라우저가 알고리즘에 의해 자동으로 처리하며 캐시 적용 여부는 Cache-Control 응답 헤더를 통해 확인할 수 있다
+
+**[cache-control 헤더의 주요 속성]**
+
+- **`max-age`**
+  - 캐시의 유효시간, 단위는 초
+- **`no-cache`**
+  - 캐시를 사용전에 서버에게 한번 검증을 받아야 함
+- **`no-store`**
+  - 캐시를 사용하지 않음 (민감한 정보 및 개인 데이터를 다룰때 쓰인다)
+- **`private`**
+  - 응답이 개별 사용자에게 특화되었음 (개인 프로필 정보 등등..)
+    - “이 응답은 개인적”이므로, 오직 사용자의 브라우저에만 응답을 캐시해라!
+    - “CDN과 같은 중간 서버들에서 캐시를 하지 말아라 (= 다른 사용자가 동일한 URL에 접근했을때 정보가 보여지지 않도록)
+- **`public`**
+
+  - 응답이 공용 캐시에 저장될 수 있음, 즉 모든 환경에서 캐시 O
+
+<hr>
+
+위 내용을 기반으로 노드 서버에서 적절한 캐시 헤더를 설정해보자!
+
+```javascript
+// 기존코드
+const header = {
+  setHeaders: (res, path) => {
+    res.setHeader(
+      "Cache-Control",
+      "private, no-cache, no-store, must-revalidate"
+    );
+    res.setHeader("Expires", "-1");
+    res.setHeader("Pragma", "no-cache");
+  },
+};
+
+// 수정코드
+const header = {
+  setHeaders: (res, path) => {
+    if (path.endsWith(".html")) {
+      res.setHeader("Cache-Control", "no-cache");
+    } else if (
+      path.endsWith(".js") ||
+      path.endsWith(".css") ||
+      path.endsWith(".webp")
+    ) {
+      res.setHeader("Cache-Control", "public, max-age=31536000");
+    } else {
+      res.setHeader("Cache-Control", "no-store");
+    }
+  },
+};
+```
+
+**[적절한 캐시 유효 시간]**
+
+- **HTML 파일**:
+  - HTML 파일은 애플리케이션의 동적 내용을 반영하는 중심적인 자원이기때문에 자주 **변경될 가능성이 높다. (게시물 내용, 이미지…등등 동적으로 가져오는 경우가 많으니까)**
+  - **`no-cache`**를 사용하면 브라우저는 항상 원래 서버에 해당 리소스의 유효성을 확인하고, **변경되었을 경우 최진 버전을 제공**해주어야한다
+- **JS, CSS, 이미지 파일**:
+  - 이러한 정적 자원들은 자주 변경되지 않을 가능성이 높다.
+  - **`public, max-age=31536000`**는 리소스가 공용 캐시에 저장될 수 있음을 나타낸다
+- **기타 파일**:
+  - **`no-store`**는 캐시에 어떠한 것도 저장되지 않도록 하는데 이는 매번 해당 자원을 서버에서 새로 가져와야 함을 의미한다.
+  - 민감한 데이터나 자주 변경되는 데이터에 적합
+
+<img src="https://github.com/Meet-the-past/docker/assets/78795820/4cd3b5b4-3e6e-4f21-bce6-95ab4d7ef208" alt="전" width="600" style="display:inline;" />
+<img src="https://github.com/Meet-the-past/docker/assets/78795820/57593280-e49b-4282-a88d-577e71ce5e22" alt="후" width="600" style="display:inline;" />
+
+> 캐시 적용 전/후 이미지
+>
+> 그런데 캐시설정은 사실상 서버쪽에서 다루는 듯 하다. 프론트쪽에서 일방적으로 설정하는건 어려운듯.. 개념을 이해하고있자!
+
+## 3.5 CSS 최적화
+
+![image](https://github.com/Meet-the-past/docker/assets/78795820/0ae84284-a385-41a3-834a-61d7654f6809)
+
+- 문제 상황 : Lighthouse의 분석 결과, 불필요한 main.chunk.css 리소스에 의해 경고가 표시되고 있다.
+- 목표 : 사용하지 않는 CSS를 제거하여 성능을 개선하자.
+<hr>
+
+Q. 왜 해당 경고는 배포서버에서만 표현될까?
+
+→ 로컬에서는 모든 클래스(사용 여부와 상관없이)가 포함된 상태로 CSS가 빌드되므로 "사용하지 않는 CSS" 경고가 나타나지 않는다. 그러나 배포 환경에서는 그러한 경고가 나타날 수 있다.
+
+(보통 실시간으로 코드 변경을 반영하기 위한 설정이 활성화되어 있고, 이 때문에 모든 가능한 CSS가 로드)
+
+<hr>
+
+### 3.5.1 PurgeCSS
+
+**[PurgeCSS]**
+PurgeCSS는 사용되지 않는 CSS를 자동으로 제거하여 최종 CSS 파일의 크기를 줄이는 도구이다
+
+**[작동 원리]**
+
+1. **HTML, JS, 템플릿 파일 분석**: PurgeCSS는 프로젝트 내의 파일들을 스캔하여 사용된 CSS 클래스와 선택자를 파악
+2. **CSS 파일과 비교**: 그 다음, 스타일시트에 정의된 모든 클래스와 선택자를 검토하여 실제로 파일에서 사용되지 않는 클래스와 선택자를 확인
+3. **불필요한 CSS 제거**: 실제로 사용되지 않는 클래스와 선택자를 CSS 파일에서 제거
+
+```
+npm install --save-dev purgecss // 설치
+
+
+purgecss --css ./build/static/css/*.css --output ./build/static/css/ --content ./build/index.html ./build/static/js/*.js  --config ./purgecss.config.js
+
+// 명령어 실행 시 빌드된 HTML 및 JS 텍스트 키워드를 추출하여, 최적화를 하게 된다.
+
+```
+
+> 여기서 lg:m-8과 같이 Tailwind CSS나 일부 다른 CSS 프레임워크를 사용하고 있다면, 콜론(:) 문자를 올바르게 처리하기 위한 별도의 설정이 필요하다.
+
+```
+module.exports = {
+  defaultExtractor: (content) => content.match(/[\w\:\-]+/g) || [],
+};
+
+// 콜론 문자를 하나의 키워드로 인식하기 위한 정규식
+```
+
+![image](https://github.com/Meet-the-past/docker/assets/78795820/c049809c-cd81-4886-8420-287913cfc2f8)
+![image](https://github.com/Meet-the-past/docker/assets/78795820/5d39f0f3-785f-4d69-8562-30a1fa657f6c)
+
+> 전/후 이미지 비교
+>
+> 눈에 띄게 크기가 줄어들었다
+
+<hr>
+
+Q. Tailwind, Bootstrap 같은 CSS 프레임워크를 사용한다면 사용하지 않는 CSS를 줄이기 위해 PurgeCSS를 사용하는게 매우 의미있다고 생각한다.
+그럼 보통 그 외에는 안쓰는편일까?
+
+![image](https://github.com/Meet-the-past/docker/assets/78795820/6d94db73-5730-4a90-9791-eaa1003aa67a)
+![image](https://github.com/Meet-the-past/docker/assets/78795820/e31e3eec-ca72-49d0-b276-0aa26a104696)
+
+> mui를 활용한 프로젝트에 대해 purgeCSS를 써본 결과의 전/후 이미지 비교 (차이가 별로 없는데?)
+>
+> 생각해보면 실수로 지우지 않은 불필요한 CSS를 제거하는 데 유용할 듯 하다
+>
+> build 명령어 자체에 넣어버려서 자동화하는것도 괜찮지 않을까?
+
 ## 참고자료
 
 [https://bongbongdang.tistory.com/142](https://bongbongdang.tistory.com/142)
@@ -514,3 +673,5 @@ Data-URL은 웹 리소스를 URL 문자열로 직접 내장하는 방식을 의�
 [https://scarlett-dev.gitbook.io/all/it/lazy-loading](https://scarlett-dev.gitbook.io/all/it/lazy-loading)
 
 [https://velog.io/@byeol4001/Base-64와-base64-img-사용하기](https://velog.io/@byeol4001/Base-64와-base64-img-사용하기)
+
+[https://toss.tech/article/smart-web-service-cache](https://toss.tech/article/smart-web-service-cache)
