@@ -97,6 +97,15 @@
 
         <ul>
              
+            {% for category in site.categories %}
+                {% if category[0] == "Event" %}
+                    <li><a href="/categories/event" class="">Event ({{category[1].size}})</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+        <ul>
+             
                 {% for category in site.categories %}
                     {% if category[0] == "Blog" %}
                         <li><a href="/categories/blog" class="">Blog ({{category[1].size}})</a></li>
