@@ -22,6 +22,15 @@
                     {% endif %}
                 {% endfor %}
             </ul>
+
+            <ul>
+             
+                {% for category in site.categories %}
+                    {% if category[0] == "Next" %}
+                        <li><a href="/categories/next" class="">Next ({{category[1].size}})</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
           
         <span class="nav__sub-title">Backend</span>
              <ul>
