@@ -2,7 +2,7 @@
 title: "CSS-in-JS vs CSS"
 
 categories:
-  - React
+  - CS
 tags:
   - css
 

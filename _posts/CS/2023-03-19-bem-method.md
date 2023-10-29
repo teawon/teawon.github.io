@@ -2,7 +2,7 @@
 title: "BEM 방법론 - css이름 짓기"
 
 categories:
-  - React
+  - CS
 tags:
   - css
 
