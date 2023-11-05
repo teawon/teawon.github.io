@@ -18,6 +18,8 @@ last_modified_at: 2023-09-05
 
 본 글은 "웹 개발 스킬을 한 단계 높여주는 프론트엔드 성능 최적화 가이드" 책의 공부내용으로 기억력이 좋지 않은 미래의 나를 위한 정리글입니다.
 
+[git](https://github.com/teawon/performance-lecture-study)
+
 ## 4.1 레이아웃 이동
 
 ![per-4-1](https://github.com/Meet-the-past/docker/assets/78795820/ca523163-7384-4138-a48d-1696f129977b)
