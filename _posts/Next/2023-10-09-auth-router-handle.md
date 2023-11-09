@@ -4,13 +4,14 @@ title: "Next13, middleware 기반의 페이지 접근제한"
 categories:
   - Next
 tags:
-
+  - Next13
+  - middleware
 toc: true
 toc_sticky: true
 toc_label: "목차"
 
 date: 2023-10-10
-last_modified_at: 2023-10-10
+last_modified_at: 2023-11-10
 ---
 
 ## 1. 개요
@@ -306,7 +307,62 @@ function getTokenFromCookies(request: NextRequest) {
 
 > 새로고침 등의 휘발성에 대해서는 쿠키의 RefreshToken을 사용해 다시 AccessToken을 발급받으면 된다
 
-## 5. 참고자료
+## 6. 트러블슈팅
+
+그렇게 잘 되는 줄 알았으나, 한 가지 문제가 있었습니다.
+
+사용자가 페이지를 새로고침했을 때 Next.js의 middleware가 동일한 페이지에 대해 재호출되지 않는 문제가 있었거든요.
+
+![notWork](https://github.com/teawon/teawon.github.io/assets/78795820/d82699e1-858a-40ab-baf7-e12e3e772cbf)
+
+> / 페이지와 /signin 페이지를 왔다갔다 했는데 middleware가 동작하지 않는다
+>
+> 새로고침을 한 시점에서, 각 페이지가 한번씩만 호출된다 (캐싱문제..?)
+>
+> 그러나, 만약 10~20초가 지나면 정상적으로 동작한다 (각 페이지에서 계속 호출)
+
+따라서 로그인과 로그아웃을 했을때 middleware가 실행되지 않아 페이지 라우팅이 일어나지 않는 문제를 해결해야만 했습니다.
+
+### 6.1 해결
+
+이 문제의 원인은 명확하게 파악하지 못했지만, middleware의 캐시를 지우는 방법에 대해서도 현상이 유지되었기때문에
+
+아래의 코드를 통해 로그인, 로그아웃 시점에 페이지를 새로고침하도록 처리했습니다🥲 (임시방편..)
+
+```javascript
+// middleware.ts
+
+//  { ... }
+const nextResponse = NextResponse.next();
+nextResponse.headers.set("x-middleware-cache", "no-cache");
+console.log("middleware.ts: nextResponse");
+return nextResponse;
+```
+
+> 효과가 없었다..
+
+```javascript
+// when login Success
+const handleLoginSuccess = (token: string) => {
+  Cookies.set("accessToken", token, { expires: 1 });
+  setLoggedIn(true);
+  router.push("/");
+  router.refresh();
+};
+
+// when logout success
+const logout = () => {
+  setLoggedIn(false);
+  queryClient.clear();
+  router.push("/");
+  router.refresh();
+  Cookies.remove("accessToken");
+};
+```
+
+[참고자료](https://github.com/vercel/next.js/discussions/43675)
+
+## 6. 참고자료
 
 [https://nextjs.org/docs/app/building-your-application/routing/middleware](https://nextjs.org/docs/app/building-your-application/routing/middleware)
 
