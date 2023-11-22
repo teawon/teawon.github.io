@@ -212,11 +212,11 @@ const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
 
 그러나, 실제 파일을 드래그래서 올려보면 div요소의 onDrop함수가 아니라 Editor내부의 `onUploadImage`메서드가 먼저 실행됩니다.
 
-이는 DOM의 이벤트 라이프사이클, 특히 이벤트 전파(Event Propagation) 메커니즘 때문입니다.
+<u>이는 DOM의 이벤트 라이프사이클, 특히 이벤트 전파(Event Propagation) 메커니즘 때문입니다. </u>
 
 <br>
 
-DOM의 이벤트 전파는 크게 캡처 단계(capture phase)와 버들 단계(bubble phase)으로 나뉩니다. (+target phase)
+DOM의 이벤트 전파는 크게 <u>캡처 단계(capture phase)</u>와 <u>버블 단계(bubble phase)</u>으로 나뉩니다. (target phase개념도 있긴 합니다)
 
 캡처 단계에서는 이벤트가 상위 요소에서 하위 요소로 전달됩니다. 반면, 버블링 단계에서는 이벤트가 하위 요소에서 상위 요소로 전파됩니다.
 
