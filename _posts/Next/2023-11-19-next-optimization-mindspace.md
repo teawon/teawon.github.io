@@ -196,7 +196,7 @@ const NodeModalLazy = lazy(() => import("./components/Modal"));
 
 <img width="695" alt="image" src="https://github.com/teawon/teawon.github.io/assets/78795820/a53abe6a-f34f-461f-8c85-114e82c9cb60">
 
-> 398ms에서 198ms로 LCP(Largest Contentful Paint)가 실질적으로 약 50% 향상
+> 398ms에서 198ms로 TBT(Total Blocking Time) 가 실질적으로 약 50% 향상
 
 > 두 데이터 로드 시점이 분리되었다
 
