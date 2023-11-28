@@ -5,3 +5,12 @@ bundle exec jekyll serve  // 서버 실행
 ![image](url){: .center}{: width="300" height="400"} // 이미지 정렬 + 크기조절
 
 <span style="color:red">text</span> // 색 효과 적용
+
+
+<details>
+<summary>토글</summary>
+<div markdown="1">
+
+</div>
+
+</details>
