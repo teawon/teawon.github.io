@@ -29,6 +29,19 @@
 
     &.sticky {
       overflow-y: auto;
+      scrollbar-width: thin;
+
+      &::-webkit-scrollbar {
+        width: 3px; /* 수평 스크롤바 높이 */
+        height: 5px; /* 수직 스크롤바 너비 */
+      }
+
+      /* 스크롤바의 실제 핸들 부분 */
+      &::-webkit-scrollbar-thumb {
+        background: mix(#000, $primary-color, 30%); /* 스크롤바 색상 */
+        border-radius: 1px; /* 스크롤바 둥근 모서리 */
+      }
+
       /* calculate height of nav list
          viewport height - nav height - masthead x-padding
       */
