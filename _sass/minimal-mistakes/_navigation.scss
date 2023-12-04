@@ -549,8 +549,8 @@
 
   .nav__title {
     color: #fff;
-    font-size: $type-size-5;
-    background: mix(#fff, $primary-color, 30%);
+    font-size: $type-size-6;
+    background: mix(#fff, $primary-color, 10%);
     border-top-left-radius: $border-radius;
     border-top-right-radius: $border-radius;
   }
@@ -586,12 +586,12 @@
   }
 
   li ul > li a {
-    padding-left: 1.25rem;
+    padding-left: 1rem;
     font-weight: normal;
   }
 
   li ul li ul > li a {
-    padding-left: 1.75rem;
+    padding-left: 1.25rem;
   }
 
   li ul li ul li ul > li a {

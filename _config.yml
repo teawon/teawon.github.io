@@ -49,7 +49,7 @@ comments:
     category_id: # Shown during giscus setup at https://giscus.app
     discussion_term: # "pathname" (default), "url", "title", "og:title"
     reactions_enabled: # '1' for enabled (default), '0' for disabled
-    theme: # "light" (default), "dark", "dark_dimmed", "transparent_dark", "preferred_color_scheme"
+    theme: light # "light" (default), "dark", "dark_dimmed", "transparent_dark", "preferred_color_scheme"
   staticman:
     branch: # "master"
     endpoint: # "https://{your Staticman v3 API}/v3/entry/github/"
@@ -137,9 +137,12 @@ footer:
     # - label: "Facebook"
     #   icon: "fab fa-fw fa-facebook-square"
     #   # url:
-    - label: "GitHub"
+    - label: ""
       icon: "fab fa-fw fa-github"
       url: "https://github.com/teawon"
+    - label: ""
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://www.linkedin.com/in/%ED%83%9C%EC%9B%90-%EC%A0%95-636aa1270/"
     # - label: "GitLab"
     #   icon: "fab fa-fw fa-gitlab"
     #   # url:
