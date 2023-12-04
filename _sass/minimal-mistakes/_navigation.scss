@@ -127,10 +127,9 @@
   /* next/previous buttons */
   &--pager {
     padding: 1em 2em;
-    //float: left;
     width: 50%;
     font-family: $sans-serif;
-    font-size: $type-size-5;
+    font-size: $type-size-7;
     font-weight: bold;
     text-align: center;
     text-decoration: none;
@@ -152,7 +151,7 @@
     }
 
     &:hover {
-      @include yiq-contrasted($muted-text-color);
+      box-shadow: 0 2px 4px rgba($muted-text-color, 0.4);
     }
 
     &:first-child {
