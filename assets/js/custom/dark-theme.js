@@ -11,6 +11,12 @@ const toLight = () => {
   toggleThemeBtn.innerHTML = `<i class="fa fa-solid fa-sun"></i>`;
   defaultTheme.disabled = false;
   darkTheme.disabled = true;
+
+  if (window["customUtterances"]) {
+    const customUtterances = window["customUtterances"];
+    customUtterances.onChange(customUtterances.darkTheme);
+  }
+
   localStorage.setItem("theme", "default");
 };
 
@@ -18,6 +24,12 @@ const toDark = () => {
   toggleThemeBtn.innerHTML = `<i class="fa fa-solid fa-moon"></i>`;
   defaultTheme.disabled = true;
   darkTheme.disabled = false;
+
+  if (window["customUtterances"]) {
+    const customUtterances = window["customUtterances"];
+    customUtterances.onChange(customUtterances.theme);
+  }
+
   localStorage.setItem("theme", "dark");
 };
 
