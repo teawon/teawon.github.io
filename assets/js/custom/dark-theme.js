@@ -14,7 +14,7 @@ const toLight = () => {
 
   if (window["customUtterances"]) {
     const customUtterances = window["customUtterances"];
-    customUtterances.onChange(customUtterances.darkTheme);
+    customUtterances.onChange(customUtterances.theme);
   }
 
   localStorage.setItem("theme", "default");
@@ -27,7 +27,7 @@ const toDark = () => {
 
   if (window["customUtterances"]) {
     const customUtterances = window["customUtterances"];
-    customUtterances.onChange(customUtterances.theme);
+    customUtterances.onChange(customUtterances.darkTheme);
   }
 
   localStorage.setItem("theme", "dark");
