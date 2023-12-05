@@ -6,6 +6,7 @@ bundle exec jekyll serve  // 서버 실행
 
 <span style="color:red">text</span> // 색 효과 적용
 
+## 토글
 
 <details>
 <summary>토글</summary>
@@ -14,3 +15,16 @@ bundle exec jekyll serve  // 서버 실행
 </div>
 
 </details>
+
+
+## 강조
+{: .notice} // 기본(회색)
+{: .notice--primary} // 테마
+{: .notice--warning} // 주황
+{: .notice--success} // 초록
+{: .notice--danger}  // 빨강
+
+<div class="notice">
+  <h4>Message</h4>
+  <p>A basic message.</p>
+</div>
