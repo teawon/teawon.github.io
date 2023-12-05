@@ -20,7 +20,7 @@ title: "Memory"
 title_separator: "-"
 subtitle: # site tagline that appears below site title in masthead
 name: "teawon"
-description: "공부 & 개발 내용 기록 블로그"
+description: "프론트엔드 개발자 teawon의 블로그입니다. 프론트엔드와 관련된 공부를 주로 진행하며 공부한 내용을 기록하고 소개합니다."
 url: "https://teawon.github.io"
 baseurl: # the subpath of your site, e.g. "/blog"
 repository: "teawon/blog-comments"
