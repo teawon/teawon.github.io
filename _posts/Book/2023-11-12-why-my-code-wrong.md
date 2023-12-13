@@ -10,6 +10,9 @@ toc_label: "목차"
 
 date: 2023-11-12
 last_modified_at: 2023-11-22
+
+header:
+  teaser: https://github.com/teawon/teawon.github.io/assets/78795820/0a7af37d-7ba2-4b0c-a290-82b3f59f3382
 ---
 
 ![image](https://github.com/teawon/teawon.github.io/assets/78795820/0a7af37d-7ba2-4b0c-a290-82b3f59f3382){: .center}

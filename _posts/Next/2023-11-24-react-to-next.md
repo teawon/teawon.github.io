@@ -11,6 +11,9 @@ toc_label: "목차"
 
 date: 2023-11-24
 last_modified_at: 2023-11-24
+
+header:
+  teaser: https://github.com/teawon/teawon.github.io/assets/78795820/89a9b0d9-2008-4119-b51d-850552f7f459
 ---
 
 ## 1. 마이그레이션 배경

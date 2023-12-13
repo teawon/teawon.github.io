@@ -1,6 +1,7 @@
 ---
 title: TOAST UI - 이미지 다중 업로드 구현
-
+header:
+  teaser: https://github.com/teawon/teawon.github.io/assets/78795820/6f8b8ba2-2931-47e4-adfd-d91ecbfa4c4b
 categories:
   - Next
 tags:

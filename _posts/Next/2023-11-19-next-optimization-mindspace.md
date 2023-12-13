@@ -15,6 +15,9 @@ toc_label: "목차"
 
 date: 2023-11-19
 last_modified_at: 2023-11-19
+
+header:
+  teaser: https://github.com/teawon/teawon.github.io/assets/78795820/ca72cf18-09a4-49e7-adb7-7e0a2349f85c
 ---
 
 ## 1. 개요

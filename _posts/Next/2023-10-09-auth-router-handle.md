@@ -12,6 +12,9 @@ toc_label: "목차"
 
 date: 2023-10-10
 last_modified_at: 2023-11-10
+
+header:
+  teaser: https://github.com/teawon/Algorithm_js/assets/78795820/c701ff8c-cac4-46ad-8972-c4d97b46c527
 ---
 
 ## 1. 개요
