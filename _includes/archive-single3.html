@@ -13,7 +13,9 @@ post.id %} {% assign title = post.title | markdownify | remove: "
     <!-- 이미지 컨테이너 -->
     {% if include.type == "list" and teaser %}
     <div class="archive__item-teaser_list">
-      <img src="{{ teaser | relative_url }}" alt="" />
+      <a class="image-link" href="{{ post.url | relative_url}}">
+        <img src="{{ teaser | relative_url }}" alt="{{ post.title }}" />
+      </a>
     </div>
     {% endif %}
 
