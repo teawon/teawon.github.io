@@ -1,15 +1,17 @@
-const defaultTheme = [...document.styleSheets].find((style) =>
+const mainTheme = [...document.styleSheets].find((style) =>
   /(main.css)$/.test(style.href)
 );
 const darkTheme = [...document.styleSheets].find((style) =>
   /(main_dark.css)$/.test(style.href)
 );
 
+const defaultTheme = "dark";
+
 const toggleThemeBtn = document.getElementById("toggle-theme");
 
 const toLight = () => {
   toggleThemeBtn.innerHTML = `<i class="fa fa-solid fa-sun"></i>`;
-  defaultTheme.disabled = false;
+  mainTheme.disabled = false;
   darkTheme.disabled = true;
 
   if (window["customUtterances"]) {
@@ -17,12 +19,12 @@ const toLight = () => {
     customUtterances.onChange(customUtterances.theme);
   }
 
-  localStorage.setItem("theme", "default");
+  localStorage.setItem("theme", "main");
 };
 
 const toDark = () => {
   toggleThemeBtn.innerHTML = `<i class="fa fa-solid fa-moon"></i>`;
-  defaultTheme.disabled = true;
+  mainTheme.disabled = true;
   darkTheme.disabled = false;
 
   if (window["customUtterances"]) {
@@ -33,7 +35,7 @@ const toDark = () => {
   localStorage.setItem("theme", "dark");
 };
 
-const currentTheme = () => localStorage.getItem("theme");
+const currentTheme = () => localStorage.getItem("theme") || defaultTheme;
 
 const setDarkMode = (isDark) => {
   if (isDark) {
@@ -47,7 +49,7 @@ if (darkTheme) {
   let isDarkMode = false;
   if (currentTheme() === "dark") {
     isDarkMode = true;
-  } else if (currentTheme() === "default") {
+  } else if (currentTheme() === "main") {
     isDarkMode = false;
   } else {
     isDarkMode = matchMedia("(prefers-color-scheme: dark)").matches;
