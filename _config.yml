@@ -24,7 +24,7 @@ description: "프론트엔드 개발자 teawon의 블로그입니다. 프론트�
 url: "https://teawon.github.io"
 baseurl: # the subpath of your site, e.g. "/blog"
 repository: "teawon/blog-comments"
-teaser: "/assets/images/defaultTeaser" # path of fallback teaser image, e.g. "/assets/images/500x300.png"
+teaser: "/assets/images/defaultTeaser.jpg" # path of fallback teaser image, e.g. "/assets/images/500x300.png"
 logo: "/assets/images/logo.png" ## path of logo image to display in the masthead, e.g. "/assets/images/88x88.png"
 masthead_title: # overrides the website title displayed in the masthead, use " " for no title
 # breadcrumbs            : false # true, false (default)

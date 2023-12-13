@@ -1,0 +1,50 @@
+{% if post.header.teaser %} {% capture teaser %}{{ post.header.teaser }}{%
+endcapture %} {% else %} {% assign teaser = site.teaser %} {% endif %} {% if
+post.id %} {% assign title = post.title | markdownify | remove: "
+<p>" | remove: "</p>
+" %} {% else %} {% assign title = post.title %} {% endif %}
+
+<div class="{{ include.type | default: 'list' }}__item">
+  <article
+    class="archive__item"
+    itemscope
+    itemtype="https://schema.org/CreativeWork"
+  >
+    <!-- 이미지 컨테이너 -->
+    {% if include.type == "list" and teaser %}
+    <div class="archive__item-teaser_list">
+      <img src="{{ teaser | relative_url }}" alt="" />
+    </div>
+    {% endif %}
+
+    <!-- 글 정보 컨테이너 -->
+    <div class="archive__item-postbox">
+      <!-- 제목 -->
+      <h2 class="archive__item-title no_toc" itemprop="headline">
+        {% if post.link %}
+        <a href="{{ post.link }}">{{ title }}</a>
+        <a href="{{ post.url | relative_url }}" rel="permalink"
+          ><i class="fas fa-link" aria-hidden="true" title="permalink"></i
+          ><span class="sr-only">Permalink</span></a
+        >
+        {% else %}
+        <a href="{{ post.url | relative_url }}" rel="permalink">{{ title }}</a>
+        {% endif %}
+      </h2>
+
+      <!-- 요약 -->
+      <div class="post-content-preview">
+        {{ post.content | strip_html | truncate: 180 }}
+      </div>
+
+      <!-- 날짜 -->
+      <p class="post-date">{{ post.date | date: "%Y-%m-%d" }}</p>
+
+      <!-- 태그 -->
+      {% include page__meta.html type=include.type %} {% if post.excerpt %} {%
+      endif %} {% if site.category_archive.type and post.categories[0] and
+      site.tag_archive.type and post.tags[0] %} {%- include
+      post__taxonomy.html-%} {% endif %}
+    </div>
+  </article>
+</div>

@@ -1,5 +1,13 @@
 ---
-layout: home
+layout: archive
 sidebar_main: true
 author_profile: true
+entries_layout: list
 ---
+
+<div class="grid__wrapper">
+  {% for post in paginator.posts %} {% include archive-single3.html type="list"
+  %} {% endfor %}
+</div>
+
+{% include paginator.html %}

@@ -19,7 +19,7 @@
 }
 
 .archive__item {
-  position: relative;
+  display: block;
 
   a {
     position: relative;
@@ -43,16 +43,108 @@
   }
 }
 
+// 여기부터
+.list__item {
+  display: block;
+  margin-bottom: 1em;
+
+  @include breakpoint($medium) {
+    margin: auto;
+    width: 100%;
+    max-width: $small + 100px;
+  }
+
+  @include breakpoint($x-large) {
+    margin-left: 0.2em;
+    width: 70%;
+    max-width: $x-large + 100px;
+  }
+
+  .archive__item-teaser_list {
+    width: 100%;
+    padding-bottom: 56.25%;
+    position: relative;
+    border-radius: $border-radius;
+    transition: all 0.2s linear; //hover 시간 조정
+    height: 300px;
+
+    img {
+      cursor: pointer;
+      width: 100%;
+      position: absolute;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+  }
+
+  /* 글 정보 컨테이너 */
+  .archive__item-postbox {
+    @include breakpoint($medium) {
+      font-size: 16px;
+    }
+
+    @include breakpoint($large) {
+      font-size: 18px;
+    }
+
+    @include breakpoint($x-large) {
+      font-size: 20px;
+    }
+  }
+
+  /* 제목 스타일링 */
+  .archive__item-title {
+    margin: 0.5em 0em;
+    p {
+      margin: 0;
+    }
+  }
+
+  /* 본문 미리보기 스타일링 */
+  .post-content-preview {
+    margin-bottom: 0.1em; /* 본문과 날짜 사이 간격 */
+  }
+
+  /* 날짜 및 태그 스타일링 */
+  .post-date {
+    font-size: 0.8em;
+    color: gray;
+    margin-bottom: 0.5em; /* 날짜와 태그 사이 간격 */
+  }
+
+  /* 태그 스타일링 */
+  .page__taxonomy {
+    font-size: 0.8em;
+
+    a {
+      background: mix($background-color, $primary-color, 80%);
+      color: $primary-color;
+      border-radius: 10px;
+      text-decoration: none;
+      margin-right: 0.5em;
+      padding: 0.3em 0.5em;
+    }
+  }
+}
+
+.list__item:not(:last-child) {
+  border-bottom: 1px solid mix($background-color, $text-color, 80%);
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+}
+
 .archive__item-title {
   margin-bottom: 0.25em;
   font-family: $sans-serif-narrow;
   line-height: initial;
   overflow: hidden;
   text-overflow: ellipsis;
-
+  a {
+    text-decoration: none;
+  }
   a[rel="permalink"]::before {
-    content: '';
-    position: absolute;
+    content: "";
     left: 0;
     top: 0;
     right: 0;
@@ -285,7 +377,7 @@
   }
 
   a.btn::before {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     top: 0;
@@ -302,16 +394,12 @@
     clear: both;
     font-size: 1.125em;
 
-    .archive__item {
-      float: left;
-    }
-
     .archive__item-teaser {
       margin-bottom: 2em;
     }
 
     a.btn::before {
-      content: '';
+      content: "";
       position: absolute;
       left: 0;
       top: 0;
@@ -352,7 +440,7 @@
     }
 
     a.btn::before {
-      content: '';
+      content: "";
       position: absolute;
       left: 0;
       top: 0;
@@ -396,7 +484,7 @@
     }
 
     a.btn::before {
-      content: '';
+      content: "";
       position: absolute;
       left: 0;
       top: 0;
@@ -442,7 +530,7 @@
    Wide Pages
    ========================================================================== */
 
-  .wide {
+.wide {
   .archive {
     @include breakpoint($large) {
       padding-right: 0;
@@ -457,7 +545,7 @@
 /* Place inside a single layout */
 
 .layout--single {
-	.feature__wrapper {
-		display: inline-block;
-	}
+  .feature__wrapper {
+    display: inline-block;
+  }
 }
