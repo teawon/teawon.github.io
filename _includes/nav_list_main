@@ -18,7 +18,7 @@
              
                 {% for category in site.categories %}
                     {% if category[0] == "React" %}
-                        <li><a href="/categories/react" class="">React ({{category[1].size}})</a></li>
+                        <li><a href="/categories/#react" class="">React ({{category[1].size}})</a></li>
                     {% endif %}
                 {% endfor %}
             </ul>
@@ -27,7 +27,7 @@
              
                 {% for category in site.categories %}
                     {% if category[0] == "Next" %}
-                        <li><a href="/categories/next" class="">Next ({{category[1].size}})</a></li>
+                        <li><a href="/categories/#next" class="">Next ({{category[1].size}})</a></li>
                     {% endif %}
                 {% endfor %}
             </ul>
@@ -37,7 +37,7 @@
              
                 {% for category in site.categories %}
                     {% if category[0] == "Spring" %}
-                        <li><a href="/categories/spring" class="">Spring ({{category[1].size}})</a></li>
+                        <li><a href="/categories/#spring" class="">Spring ({{category[1].size}})</a></li>
                     {% endif %}
                 {% endfor %}
             </ul>
@@ -47,7 +47,7 @@
             
                {% for category in site.categories %}
                    {% if category[0] == "Kotlin" %}
-                       <li><a href="/categories/kotlin" class="">Kotlin ({{category[1].size}})</a></li>
+                       <li><a href="/categories/#kotlin" class="">Kotlin ({{category[1].size}})</a></li>
                    {% endif %}
                {% endfor %}
            </ul>
@@ -57,7 +57,7 @@
              
             {% for category in site.categories %}
                 {% if category[0] == "Java" %}
-                    <li><a href="/categories/java" class="">Java ({{category[1].size}})</a></li>
+                    <li><a href="/categories/#java" class="">Java ({{category[1].size}})</a></li>
                 {% endif %}
             {% endfor %}
         </ul>
@@ -65,7 +65,7 @@
         <ul>
             {% for category in site.categories %}
                 {% if category[0] == "Question" %}
-                    <li><a href="/categories/question" class="">Question ({{category[1].size}})</a></li>
+                    <li><a href="/categories/#question" class="">Question ({{category[1].size}})</a></li>
                 {% endif %}
             {% endfor %}
         </ul>
@@ -75,7 +75,7 @@
              
             {% for category in site.categories %}
                 {% if category[0] == "Network" %}
-                    <li><a href="/categories/network" class="">Network ({{category[1].size}})</a></li>
+                    <li><a href="/categories/#network" class="">Network ({{category[1].size}})</a></li>
                 {% endif %}
             {% endfor %}
         </ul>
@@ -86,7 +86,7 @@
              
             {% for category in site.categories %}
                 {% if category[0] == "CS" %}
-                    <li><a href="/categories/cs" class="">CS ({{category[1].size}})</a></li>
+                    <li><a href="/categories/#cs" class="">CS ({{category[1].size}})</a></li>
                 {% endif %}
             {% endfor %}
         </ul>
@@ -99,7 +99,7 @@
              
             {% for category in site.categories %}
                 {% if category[0] == "Book" %}
-                    <li><a href="/categories/book" class="">Book ({{category[1].size}})</a></li>
+                    <li><a href="/categories/#book" class="">Book ({{category[1].size}})</a></li>
                 {% endif %}
             {% endfor %}
         </ul>
@@ -108,7 +108,7 @@
              
             {% for category in site.categories %}
                 {% if category[0] == "Event" %}
-                    <li><a href="/categories/event" class="">Event ({{category[1].size}})</a></li>
+                    <li><a href="/categories/#event" class="">Event ({{category[1].size}})</a></li>
                 {% endif %}
             {% endfor %}
         </ul>
@@ -117,7 +117,7 @@
              
                 {% for category in site.categories %}
                     {% if category[0] == "Blog" %}
-                        <li><a href="/categories/blog" class="">Blog ({{category[1].size}})</a></li>
+                        <li><a href="/categories/#blog" class="">Blog ({{category[1].size}})</a></li>
                     {% endif %}
                 {% endfor %}
             </ul>
@@ -126,7 +126,7 @@
              
                 {% for category in site.categories %}
                     {% if category[0] == "Project" %}
-                        <li><a href="/categories/project" class="">Project ({{category[1].size}})</a></li>
+                        <li><a href="/categories/#project" class="">Project ({{category[1].size}})</a></li>
                     {% endif %}
                 {% endfor %}
             </ul>
