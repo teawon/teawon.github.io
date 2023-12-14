@@ -13,6 +13,9 @@ toc_label: "목차"
 
 date: 2023-09-24
 last_modified_at: 2023-09-24
+
+header:
+  teaser: https://github.com/teawon/teawon.github.io/assets/78795820/ead6e4fd-64c7-4c9d-a59f-7636d837a417
 ---
 
 ## 후기
