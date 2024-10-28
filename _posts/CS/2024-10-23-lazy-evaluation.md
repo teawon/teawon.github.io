@@ -1,19 +1,20 @@
 ---
-title: "지연평가와 실용성"
+title: "지연평가(Lazy Evaluaion)"
 categories:
   - CS
 tags:
-  - Yield
+  - javascript
   - Generator
+  - Lazy Evaluation
 toc: true
 toc_sticky: true
 toc_label: "목차"
 
 date: 2024-10-23
-last_modified_at: 2023-10-23
+last_modified_at: 2023-10-29
 
 header:
-  teaser: https://github.com/teawon/teawon.github.io/assets/78795820/6eeff15c-206a-48d3-893e-f6414b3276e0
+  teaser: https://github.com/user-attachments/assets/076f8efb-516a-4e26-b273-e4bfd8527351
 ---
 
 ## 1. 개념
@@ -163,4 +164,105 @@ console.log(generator.next().value); // undefined
 
 ## 4. 성능 비교
 
+제너레이터 기반의 지연 평가를 사용하면 복잡한 데이터를 더 효과적으로 처리하고 시스템 자원을 최적화할 수 있습니다. 그렇다면, 모든 연산이나 작업에 지연 평가를 적용하는 것이 항상 최선의 선택일까요?
+
+지금부터 실제로 대량의 데이터를 처리하는 상황을 가정하여, 지연 평가와 즉시 평가의 성능 차이를 비교해 보겠습니다. 이를 통해 얼마나 실질적인 성능 차이가 있는지 살펴보고자 합니다.
+
+<br>
+
+![my-example](https://github.com/user-attachments/assets/076f8efb-516a-4e26-b273-e4bfd8527351)
+
+<div class="notice">
+ <p>서버에서는 100만 건의 사용자 데이터를 보내줍니다.</p>
+ <p>사용자는 "나이", "활동량 지표" 값을 속성으로 가지고 있습니다.</p>
+ <p>클라이언트에서는 활동량 지표의 최소 및 최대 값을 입력받아, 해당 기준에 부합하는 표본 50개를 랜덤하게 추출하여 그래프로 시각화합니다.</p>
+</div>
+
+이제 임의의 데이터 100만건에 대해 50개의 데이터를 추출하는 로직이 필요합니다.
+
+다음의 두 코드는 각 추출 코드를 **지연평가 방식** 및 **엄격한 평가** 방식으로 구현한 코드입니다.
+
+> lodash라이브러리의 지연평가 기능을 사용
+
+```javascript
+// 지연평가 기반의 표본 추출 코드
+import _ from "lodash/fp";
+
+function findTopUsersLazy(entries, maxCount, minLevel, maxLevel) {
+  return _.pipe(
+    _.filter(
+      (entry) =>
+        entry.activityLevel >= minLevel && entry.activityLevel <= maxLevel
+    ),
+    _.take(maxCount),
+    _.map((entry) => ({
+      userId: entry.userId,
+      level: entry.activityLevel,
+      age: entry.age,
+    }))
+  )(entries);
+}
+```
+
+```javascript
+// 엄격한(즉시)평가 기반의 표본 추출 코드
+
+function findTopUsersEager(entries, maxCount, minLevel, maxLevel) {
+  const filteredEntries = entries
+    .filter(
+      (entry) =>
+        entry.activityLevel >= minLevel && entry.activityLevel <= maxLevel
+    )
+    .slice(0, maxCount);
+
+  return filteredEntries.map((entry) => ({
+    userId: entry.userId,
+    level: entry.activityLevel,
+    age: entry.age,
+  }));
+}
+```
+
+이어서 실행시간을 나타낸 비교 그래프 입니다. (단위 ms)
+
+두 코드의 실행 시간을 비교한 결과, 어림잡아도 상당한 시간차이가 발생했습니다.
+
+예시로 극단적인 사례를 들었지만, 이 차이는 다음과 같이 정리할 수 있습니다.
+
+![image](https://github.com/user-attachments/assets/f687d30f-9ef3-49da-815b-9b1e38f36b73)
+
+- 지연 평가 방식은 필요한 50개의 표본을 얻은 후, 즉시 처리를 중단
+
+- 즉시 평가 방식은 입력된 최대, 최소 기준에 해당하는 모든 데이터를 한꺼번에 필터한 후, 그 중에서 50개를 선택
+
+## 5. 정리
+
+사실, 위와 같은 극단적인 상황은 프론트엔드 환경에서 자주 발생하지 않을 수 있습니다. 일반적으로 복잡한 데이터는 서버에서 미리 가공되어 클라이언트에게 제공되는 것이 일반적이기 때문입니다.
+
+그렇지만, 지연 평가의 개념은 데이터 처리량이 많거나 성능 최적화가 필요한 상황에서 부분적으로 활용할 수 있는 효과적인 도구임은 분명합니다.
+
+사실 좋은 이야기만 나누었는데 그렇다고 해서 무턱대고 지연 평가를 사용하기보다는, 이러한 기능이 꼭 필요한 상황인지 검토하는 것이 중요한 것 같다고 생각합니다.
+
+지연 평가가 어떤 문제를 해결할 수 있는지, 그리고 이를 통해 어떤 이점을 얻을 수 있는지에 대한 명확한 이해와 논의를 바탕으로, 프로젝트 특성과 요구 사항에 맞추어 지연 평가를 적절히 활용해 필요에 따라 적절히 사용할 줄 아는 경험이 중요할 것 같습니다.
+
+## 6. 기타
+
+테스트 중 개인적인 궁금증이 생겼습니다.
+
+지연평가의 이점을 활용할 수 없는 상황이라면 오히려 지연평가의 시간이 오래 걸릴까요?
+
+위 예시에서 10,000개의 데이터에 대해 10,000개의 표본을 추출하도록 코드를 수정하고 결과를 비교한 결과입니다.
+
+> (이 경우 지연평가와 엄격한 평가 모두 동일한 연산횟수를 가집니다.)
+
+![image](https://github.com/user-attachments/assets/b2461c87-12e8-412e-bc3e-5a734356daee)
+
+아쉽게도 측정 값이 브라우저 상태 및 시스템 리소스 등 여러 외부 요인에 의해 영향을 받을 수 있다는 것을 고려했을때, 유의미한 성능 차이를 도출하기에는 부족함이 있었습니다.
+
 ## 참고자료
+
+[https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Generator](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Generator)
+
+[https://ko.javascript.info/generators](https://ko.javascript.info/generators)
+
+[tistory](https://inpa.tistory.com/entry/LODASH-%F0%9F%93%9A-%EC%A7%80%EC%97%B0-%ED%8F%89%EA%B0%80-%EC%9B%90%EB%A6%AC-lodash%EB%8A%94-%EC%98%A4%ED%9E%88%EB%A0%A4-%EC%84%B1%EB%8A%A5%EC%9D%B4-%EC%A2%8B%EC%9D%84-%EC%88%98-%EC%9E%88%EB%8B%A4)
