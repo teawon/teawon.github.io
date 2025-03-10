@@ -1,21 +1,22 @@
 ---
-title: "Nuxt 프로젝트에 React 통합하기"
+title: "Nuxt(Legacy) 프로젝트에 React 모듈 연결하기"
 
 categories:
   - React
 tags:
   - React
   - Nuxt
+  - CustomEvent
 
 toc: true
 toc_sticky: true
 toc_label: "목차"
 
-date: 2025-03-01
-last_modified_at: 2025-03-01
+date: 2025-03-09
+last_modified_at: 2025-03-11
 
 header:
-  teaser: https://github.com/teawon/Algorithm_js/assets/78795820/a4c95f69-ba6d-4e56-a099-8ee993f0478f
+  teaser: https://github.com/user-attachments/assets/19c500f7-84a8-4e3b-9e46-e16416acd372
 ---
 
 ## 1. 개요
@@ -24,15 +25,15 @@ header:
 
 특히, 특정 프레임워크나 환경에서만 실행 가능한 라이브러리는 제한된 선택지를 제공하며, 이로 인해 적합한 솔루션을 찾기 어렵게 만들 수 있습니다. 이러한 점은 아래의 프로젝트에서 직면한 문제와도 맞물렸습니다.
 
-회사의 레거시 시스템은 Nuxt1을 기반으로 운영되고 있었고, 이 환경에서 PDF 생성 모듈을 새롭게 개발해야 했습니다. 그러나 PDF 생성 로직이 이미 React 기반의 라이브러리로 구현되기로 정해진 상황이었기 때문에, 이 두 가지 기술을 조화롭게 결합하는 것이 도전 과제가 되었습니다.
+회사의 레거시 시스템은 `Nuxt1`을 기반으로 운영되고 있었고, 이 환경에서 PDF 생성 모듈을 새롭게 개발해야 했습니다. 그러나 PDF 생성 로직이 이미 `React` 기반의 라이브러리로 구현되기로 정해진 상황이었기 때문에, 이 두 가지 기술을 조화롭게 결합하는 것이 과제가 되었습니다.
 
 > Nuxt1은 2018년에 출시되었으며, 현재는 deprecated 되어있다.
 
-결국 핵심 과제는, Nuxt1의 레거시 환경에서 요구되는 기능을 구현할 수 있도록 두 상이한 프레임워크를 성공적으로 통합하는 것이었습니다. 이 과정에서 시스템의 기능성을 확장하면서도 기존 시스템의 안정성을 유지하는 솔루션을 마련하고자 했습니다.
+결국 핵심 문제는 `Nuxt1`의 레거시 환경에서 요구되는 기능을 구현할 수 있도록 두 상이한 프레임워크를 성공적으로 통합하는 것이었습니다. 이 과정에서 시스템의 기능성을 확장하면서도 기존 시스템의 안정성을 유지하는 솔루션을 마련되어야 했습니다.
 
-이 글에서는 이와 같은 문제를 해결하기 위해 고려했던 다양한 접근 방안과 그 과정에서 마주한 고민들을 탐색하고자 합니다.
+이 글에서는 이와 같은 문제를 해결하기 위해 고려했던 접근 방안과 그 과정에서 마주한 고민들을 정리해보고자 합니다.
 
-> 이미지 넣기 (레거시 프로젝트에 새로운 프레임워크?)
+![Image](https://github.com/user-attachments/assets/19c500f7-84a8-4e3b-9e46-e16416acd372)
 
 ## 2. 기술적 선택의 배경
 
@@ -77,19 +78,23 @@ PDF 모듈개발을 위해서는 다음과 같은 요구사항이 충족되어�
 | **1. 별도의 도메인으로 React 앱 띄우기** | - 개별 앱의 독립성 보장<br>- 특정 기능 분리 관리 가능 | - 도메인 관리 포인트 증가<br>- URL 종속으로 사용처 한계<br>- 복잡한 인증 처리 |
 | **2. JS 파일을 Nuxt에서 동적 로드**      | - 도메인 관리 불필요<br>- Nuxt 내 유연한 활용 가능    | - CSS 오염문제                                                                |
 
-> 두 방법의 특징 정리
-
 따라서 위와 같은 이유를 고려해 두 번째 방법을 사용해 문제를 해결하고자 하였습니다.
 
-## 4. 구현 세부 사항
+## 3. 구현 세부 사항
 
 서로 다른 프레임워크간의 이벤트를 처리하기 위해 이벤트 기반 접근 방식을 사용하여 두 프레임워크 간의 원활한 통신을 처리하도록 설계하였습니다.
 
 이를 구현하기 위해 `CustomEvent`를 활용하여 이벤트를 생성하고, 이러한 이벤트를 통해 React와 Nuxt 간의 상호작용을 가능하게 했습니다.
 
-### 4. React
+> 왜 CustomEvent을 사용했나?
+>
+> 초기에는 `window.postMessage`를 사용했으나 다른 출처를 가진 페이지간의 통신을 위해 필요한 기능이 아니라고 생각하여 `CustomEvent`로 전환하였습니다.
+>
+> window객체는 전역에서 사용되므로 전역 네임스페이스 오염을 최소화하기위해 별도의 객체를 사용하여 데이터를 그룹화하고 응집도를 높이고자하였습니다.
 
-#### 4.1 이벤트 정의 및 구조
+### 3.1 React
+
+#### 3.1.1 이벤트 설계
 
 ```ts
 // index.html
@@ -107,6 +112,8 @@ PDF 모듈개발을 위해서는 다음과 같은 요구사항이 충족되어�
 `index.html`은 기존 React 프로젝트에서 사용하는 구조와 동일합니다. 이때 id가 `react_pdf_module_id`인 div 요소는 React 앱이 마운트될 DOM 요소로 지정됩니다.
 
 이를 통해 `ReactDOM.createRoot`를 통해 해당 요소에 React 컴포넌트를 렌더링할 수 있도록 준비합니다
+
+<br>
 
 ```ts
 // global.d.ts
@@ -129,6 +136,8 @@ export {};
 `global.d.ts` 파일에서는 전역 객체 window에 추가될 모듈의 인터페이스를 선언합니다.
 
 이 인터페이스는 `CustomEvent`를 통해 주고받을 이벤트 메서드들을 정의합니다.
+
+<br>
 
 ```tsx
 // main.tsx
@@ -177,6 +186,8 @@ window.pdfModule = {
 
 기존의 React 환경에서는 애플리케이션을 시작과 동시에 마운트하는 방식으로 동작했다면, 현재 구조에서는 Nuxt가 앱을 동적으로 제어하고 요청에 따라 특정 이벤트를 발생시켜야 하므로, 각 동작을 별도의 이벤트로 분리하여 처리합니다.
 
+<br>
+
 ```tsx
 const MainPage = () => {
   { ... }
@@ -193,7 +204,7 @@ const MainPage = () => {
           { ... }
           break;
         default:
-          console.error("Unknown action");
+          { ... }
       }
     };
 
@@ -220,9 +231,9 @@ export default MainPage;
 
 실제 PDF 변환 로직에서의 시작 및 종료를 핸들링하는 이벤트는 구현 페이지에서 다음과 같이 처리합니다.
 
-위 예제는 React 컴포넌트 MainPage에서 이벤트 리스너를 설정하고 이벤트가 발생하면, handlePdfModuleEvent 함수가 호출되어 이벤트의 detail 속성을 기반으로 적절한 동작을 수행합니다.
+위 예제는 React 컴포넌트 MainPage에서 이벤트 리스너를 설정하고 이벤트가 발생하면 적절한 함수가 호출되어 미리 정의한 이벤트 동작을 수행합니다.
 
-#### 4.2 빌드 및 캐싱
+#### 3.1.2 빌드 및 캐싱
 
 앞서 구현한 React 모듈은 독립적인 웹사이트가 아니라 Nuxt에서 동적으로 로드되는 특성을 가지고 있습니다.
 
@@ -230,38 +241,105 @@ export default MainPage;
 
 이 문제를 해결하기 위해, 빌드 시 파일 이름에 해시값을 추가하는 전처리 과정을 통해 캐싱 문제를 해결해야합니다.
 
-// 이미지 넣기
-
--> 결국 웹에서는 특정 스크립트를 항상 읽지만, 스크립트에서 동적으로 최신 배포된 js 읽어오는 방식으로 동작하도록한다,
+<br>
 
 ```ts
-//package.json
+// defaultCache.ts
 
-{
-  { ... }
-  "scripts": {
-    "build": "tsc && vite build && node innerBuildHash.cjs",
-  },
-}
+// 스크립트 동적 로드를 위한 함수
+const loadScript = (src: string, name: string, type: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (!document.querySelector(`script[data-name="${name}"]`)) {
+      const script = document.createElement("script");
+      script.src = src;
+      script.type = type;
+      script.async = true;
+      script.dataset.name = name;
+      script.onload = resolve;
+      script.onerror = () => reject(new Error(`Error loading ${src}`));
+      document.body.appendChild(script);
+    } else {
+      resolve();
+    }
+  });
+};
 
+// CSS 동적 로드
+const loadCSS = (href: string, name: string) => {
+  if (!document.querySelector(`link[data-name="${name}"]`)) {
+    const link = document.createElement("link");
+    link.href = href;
+    link.rel = "stylesheet";
+    link.dataset.name = name;
+    document.head.appendChild(link);
+  }
+};
+
+// 메인 리소스 로드 함수
+const loadResources = async () => {
+  await loadScript(
+    import.meta.env.VITE_DEPLOY_URL + "assets/main.js",
+    "main",
+    "module"
+  );
+  loadCSS(import.meta.env.VITE_DEPLOY_URL + "assets/main.css", "style");
+};
+
+loadResources().catch(console.error);
 ```
 
-`package.json`에서는 빌드 프로세스를 정의합니다. 컴파일 작업을 수행하고 아래의 스크립트를 수행해 빌드된 파일의 해시를 처리합니다.
+애플리케이션에서 JavaScript와 CSS를 포함한 주요 리소스는 각 빌드 시마다 고유한 해시값이 포함된 파일명으로 생성되어 동적 로드가 필요합니다.
+
+각각의 파일을 매번 직접적으로 웹에서 로드하기보다는, 한 곳에서 관리하는 방식은 리소스 로딩을 보다 체계적으로 조절할 수 있는 장점을 제공할 수 있기 때문에 이러한 역할을 수행하는 파일을 분리하였습니다.
+
+<img width="586" alt="Image" src="https://github.com/user-attachments/assets/96917906-cf38-497c-a6bd-58ce65092ccb" />
+
+<br>
 
 ```ts
-//innerBuildHash.cjs 예시
+// vite.config.ts
+
+export default defineConfig({
+  { ... }
+   build: {
+    rollupOptions: {
+      input: {
+        main: './src/main.tsx',
+        cache: './src/defaultCache.ts',
+      },
+      output: {
+        entryFileNames: `assets/[name]-[hash].js`,
+        chunkFileNames: 'assets/[name].js',
+      },
+    },
+  },
+});
+```
+
+이어서 파일을 빌드하면 아래와 같은 파일들이 생성됩니다.
+
+```
+{ ... }
+dist/assets/index-D7WsOEMb.js                108.60 kB
+dist/assets/main-C4_uRKNb.css                  0.75 kB │ gzip:   0.35 kB
+dist/assets/cache-Cngjqysx.js                  1.10 kB │ gzip:   0.48 kB
+dist/assets/main-o7EPCvhK.js               1,710.15 kB │ gzip: 547.53 kB
+```
+
+이 과정에서 가장 중요한 점은 `cache.js` 파일이 항상 최신 버전의 스크립트를 참조하도록 보장해야한다는 부분 입니다.
+
+매번 배포 시마다 변경되는 해시값을 모든 외부 프로젝트에서 직접 동기화시키는 것은 비효율적이므로, `cache.js`가 매번 최신의 해시값을 자체적으로 읽어들이고 이를 참조할 수 있도록 내부 처리가 필요합니다.
+
+<br>
+
+```ts
+//innerBuildHash.cjs
 const fs = require("fs");
 const util = require("util");
 
 const directoryPath = __dirname + "/dist/assets";
 
-util
-  .promisify(fs.readdir)(directoryPath)
-  .then((files) => {
-    const getHashByPath = (regex, files) => {
-      const fileList = files.filter((file) => regex.test(file));
-      return fileList.length > 0 ? fileList[0].match(regex)[1] : null;
-    };
+{ ... }
 
     // 해시 추출
     const mainHash = getHashByPath(/^main-(.*).js$/, files);
@@ -284,31 +362,11 @@ util
   });
 ```
 
-위 스크립트 파일을 통해 생성된 파일의 해시 값을 추출하고 이를 기반으로 참조를 업데이트합니다.
+이러한 전처리는 빌드된 파일의 해시 값을 추출하고 이를 기반으로 `cache.js`의 참조를 업데이트하는 과정을 포함합니다.
 
-```ts
-// vite.config.ts
+결과적으로 사용하는 클라이언트에서는 오직 `cache.js` 파일만을 읽어들여 최신의 스크립트들을 참조할 수 있는 환경이 구성됩니다.
 
-export default defineConfig({
-  { ... }
-   build: {
-    rollupOptions: {
-      input: {
-        main: './src/main.tsx',
-        cache: './src/defaultCache.ts',
-      },
-      output: {
-        entryFileNames: `assets/[name]-[hash].js`,
-        chunkFileNames: 'assets/[name].js',
-      },
-    },
-  },
-});
-```
-
-// 실제 배포에 대한 파일결과, 내용물 예시넣기
-
-### 4.2 Nuxt
+### 3.2 Nuxt
 
 ```js
 <template>
@@ -323,6 +381,8 @@ export default defineConfig({
 Nuxt에서는 React 모듈이 DOM에 렌더링될 때 사용할 id 값을 지정하여 template을 구성합니다. 이 id 값은 React 앱이 마운트될 DOM 요소를 지정하는 데 사용됩니다.
 
 > 해당 DOM요소에 Pdf모듈이 마운트되며 React앱이 동적으로 로드
+
+<br>
 
 ```js
 <script>
@@ -364,23 +424,33 @@ Nuxt에서는 React 모듈이 DOM에 렌더링될 때 사용할 id 값을 지정
 
 이때 스크립트를 로드할 때 src URL 뒤에 **현재 시간을 쿼리 파라미터로 추가함**으로써 캐싱 문제를 해결합니다. 이렇게 하면 매번 새로고침할 때마다 브라우저가 항상 최신의 스크립트를 불러오게 됩니다.
 
-추가로 PDF 작업의 요청과 종료 요청에 대한 이벤트 핸들러를 작성합니다.
+또한, 이 과정에서 Pdf 모듈에서 전처리과정을 거친 `cache.js` 스크립트를 로드하면, 이 파일은 내부적으로 최신 리소스를 자동으로 참조합니다.
 
-| 실제 돔에서 읽어오는 사진 넣기
+<img width="663" alt="Image" src="https://github.com/user-attachments/assets/4292336f-6bda-4fa7-be6c-f5cd35565b2e" />
 
-## 5. 트러블 슈팅 및 고려사항
+> 상호작용 다이어그램
 
-항상 코드가 이상적으로 돌아가면 좋겠지만, 현실적으로 구현 과정에서 겪었던 이슈가 있었습니다. 이러한 문제들과 고민했던 해결 방안들을 다루어보려고 합니다.
+## 4. 이슈 및 고려사항
 
-### 5.1 CSS 오염
+위 프로젝트를 진행하며 구현 과정에서 겪었던 이슈가 있었습니다. 이러한 문제들과 고민했던 해결 방안들을 다루어보려고 합니다.
 
-### 5.2 테스트의 어려움
+### 4.1 CSS 오염
+
+위 구조에 따르면, 결국 React에서 사용된 CSS 파일은 스크립트 형태로 읽어오게 됩니다. 이로 인해, Nuxt 프로젝트와 React 모듈 간의 스타일이 오염되는 문제가 발생했습니다.
+
+특히 PdfModule 개발에 사용된 `reset.css` 파일이 기존 `Nuxt` 프로젝트 css와 서로 간섭하여 예기치 않은 문제가 발생했습니다.
+
+위 문제는 결국 `CSS Modules` 기반의 로컬 스코프로 CSS 적용 범위를 제한하는 방식으로 해결할 수 있었습니다.
+
+그럼에도 불구하고, 의도하지 않은 곳에서 동일한 구조나 이름을 가진 선택자가 예상치 못한 영향을 미칠 수 있다는 점은 예측하기 어렵다는 부분을 고려해야하며 두 환경은 완전히 독립적으로 분리되어야 하므로, CSS 간의 상호 영향에 대한 지속적인 주의와 개선점이 필요하다고 생각했습니다.
+
+### 4.2 테스트의 어려움
 
 위에서 구현한 PDF 모듈은 결국 이벤트 기반으로 작동하기 때문에 실제 변환된 PDF 결과를 디버깅하거나 코드를 테스트하려면 반복적으로 이벤트를 발생시키고 처리해야 하는 번거로움이 있었습니다.
 
-이 문제를 해결하기 위해, `React-Router`를 사용하여 테스트 전용 페이지를 따로 분리했습니다.
+이 문제를 해결하기 위해 테스트 전용 페이지를 따로 분리했습니다.
 
-이 페이지에서 자유롭게 테스트를 수행할 수 있도록 설정하였으며, 테스트 페이지는 배포 환경에서는 제외되도록 조건부 렌더링을 적용하여 환경을 구성했습니다.
+해당 페이지에서는 직접적인 상호작용을 통해 이벤트를 발생시키고 처리할 수 있도록 처리하였으며 테스트 페이지는 배포 환경에서는 제외되도록 조건부 렌더링을 적용하여 환경을 구성했습니다.
 
 ```ts
 // App.tsx
@@ -403,8 +473,81 @@ function App() {
 export default App;
 ```
 
-## 6. 결과 및 정리
+<br>
+
+또한, React 기반의 PDF 모듈은 Nuxt 환경에서 호출되므로, 정적 자산에 대한 경로는 Nuxt를 기준으로 설정해야 합니다.
+
+이를 위해 환경 변수를 사용하여 전체 경로를 명시적으로 지정하고, 모든 환경에서 통일된 경로 참조가 가능하도록 다음과 같은 처리를 해야했습니다.
+
+```tsx
+<Image src={import.meta.env.VITE_DEPLOY_URL + "images/iconExample.png"}></Image>
+```
+
+> local 환경에서는 명시적으로 "/" 경로를 지정하여 개발 환경 내 테스트에 문제가 없도록 처리
+
+### 4.3 스크립트 의존성
+
+```ts
+// defaultCache.ts
+const loadResources = async () => {
+  await loadScriptSequentially([
+    {
+      src: import.meta.env.VITE_DEPLOY_URL + "lib/a.js",
+      name: "a",
+      type: "text/javascript",
+    },
+    {
+      src: import.meta.env.VITE_DEPLOY_URL + "lib/b.js",
+      name: "b",
+      type: "text/javascript",
+    },
+    {
+      src: import.meta.env.VITE_DEPLOY_URL + "lib/c.js",
+      name: "c",
+      type: "text/javascript",
+    },
+    {
+      src: import.meta.env.VITE_DEPLOY_URL + "lib/d.js",
+      name: "d",
+      type: "text/javascript",
+    },
+  ]);
+
+  // main.js
+  loadScript(
+    import.meta.env.VITE_DEPLOY_URL + "assets/main.js",
+    "main",
+    "module"
+  );
+  // main.css
+  loadCSS(import.meta.env.VITE_DEPLOY_URL + "assets/main.css", "style");
+};
+
+loadResources().catch((error) => console.error(error));
+```
+
+React PDF 모듈에서는 특정 라이브러리와의 호환을 위해 스크립트가 동적으로 로드되어야하는 문제가 존재했습니다.
+
+단순히 스크립트를 읽어오는 로직을 넣었을때에는 스크립트의 의존관계가 고려되지 않아 문제가 발생했고,
+
+스크립트를 관리하는 cache 파일에 다음과 같은 로직을 넣어 올바른 스크립트의 로드 순서를 보장할 필요가 있었습니다.
+
+> React앱이 마운트되기전, 필요한 라이브러리의 스크립트가 로드되지 않으면 앱 자체가 띄워지지 않았다.
+
+## 5. 결과 및 정리
+
+이번 프로젝트를 통해 Nuxt 환경에서 React 기반 모듈을 유연하게 호출하고 사용할 수 있는 시스템을 구현할 수 있었습니다.
+
+특히, 모듈을 독립적으로 관리할 수 있게 되면서, **수정사항이 생기면 React Module에 대해서만 부분적인 배포할 수 있게 되었습니다.** 이는 기존 프레임워크의 종속 관계에서 벗어나, 시스템의 안정적인 유지보수와 업데이트를 가능하게 해주는 큰 장점이 되었다고 생각합니다.
+
+그러나 이러한 방법에도 명확한 한계와 아쉬운 점들이 존재했습니다. React 앱이 마운트될 때의 DOM ID 값이나 이벤트 정보는 두 프로젝트에서 각각 명시해야 하기에, 만약 잘못된 정보가 입력되거나 상관 관계를 고려하지 못했을 경우 처리에 어려움을 겪을 수 있었고 이벤트 요청에대한 타입도 자동으로 추론되지 않아 명시된 문서 외에는 사용하는 입장에서 직관성과 안정성이 떨어질 수 있다고 생각했습니다.
+
+결론적으로, 이번 프로젝트를 통해 많은 것을 배울 수 있었고, 이러한 경험을 바탕으로 향후 유사 프로젝트에서 더 나은 해결책을 찾을 수 있기를 기대합니다.
+
+> 모든 기술에는 정답이 없기 마련이지만, 이러한 아쉬운 점들을 보완해 나가는 것은 매우 중요하다고 생각합니다. 예를 들어, 웹컴포넌트에서는 `Shadow DOM` 개념을 사용해 위에서 언급했던 CSS오염문제를 해결했다고 하니 해당 방법을 사용하는 것도 좋은 접근방법이 되었을 것 같다는 생각이 드네요..!
 
 ## 참고자료
 
-[https://socket.io/docs/v4](https://socket.io/docs/v4)
+[CustomEvent](https://developer.mozilla.org/ko/docs/Web/API/CustomEvent/CustomEvent)
+
+[CSS Modules](https://create-react-app.dev/docs/adding-a-css-modules-stylesheet/)
