@@ -11,7 +11,7 @@ toc_sticky: true
 toc_label: "목차"
 
 date: 2025-03-20
-last_modified_at: 2025-03-22
+last_modified_at: 2025-03-28
 
 header:
   teaser: https://github.com/user-attachments/assets/b223dd29-90df-4e0b-aff4-1f2cc37d3bf2
@@ -43,8 +43,8 @@ React에서는 다양한 방법으로 에러를 전역적으로 핸들링하고 
 
 <div class="notice">
  <p>1. 일부 API 요청이 실패했을 때, 사용자에게 Modal을 띄워 알린다. (=특정 에러 코드가 반환 되었을 때)</p>
- <p>2. Modal에서 특정 로직(예: 사용자 확인, 추가 입력 등)을 수행한 한다</p>
- <p>3. 기존에 실패했던 api 요청을 재시도 한다.</p>
+ <p>2. Modal에서 특정 로직(예: 사용자 확인, 추가 입력 등)을 수행한다</p>
+ <p>3. 정상적으로 수행했다면 기존에 실패했던 api 요청을 재시도 한다.</p>
 </div>
 
 ![Image](https://github.com/user-attachments/assets/e5f1a08b-b114-452c-8454-ab9d13ab0207)
@@ -105,7 +105,7 @@ queryClient.setDefaultOptions({
 첫번째 방법은 각 API 호출하는 로직에서 직접 에러를 처리하고 모달을 제어하는 방식입니다.
 
 ```tsx
-const MyComponent = () => {
+const MyComponent1 = () => {
 
   const { open } = useModal();
 
@@ -121,6 +121,8 @@ const MyComponent = () => {
 
   return <Page />;
 };
+
+const MyComponent2 = () => { ... };
 ```
 
 이 방법은 가장 직관적이며, 에러 발생 지점을 명확히 파악할 수 있다는 장점이 있습니다.
@@ -143,9 +145,9 @@ const MyComponent = () => {
 
 ### 2. hook으로 수정
 
-모달을 제어하는 로직(Hooks)을 사용할 수 없다면, 전역 핸들링 로직을 커스텀 훅 형태로 확장하는 방법을 고려할 수 있습니다.
+모달을 제어하는 로직(`Hooks`)을 사용할 수 없다면, 전역 핸들링 로직을 커스텀 훅 형태로 확장하는 방법을 고려할 수 있습니다.
 
-이 방식은 Axios Interceptor를 커스텀 훅으로 감싸 React 상태와 연동하여 공통 에러 처리 로직을 한 곳에서 관리하는 접근법입니다.
+이 방식은 `Axios Interceptor`를 커스텀 훅으로 감싸 `React` 상태와 연동하여 공통 에러 처리 로직을 한 곳에서 관리하는 접근법입니다.
 
 ```tsx
 export const useAxiosInterceptor = () => {
@@ -202,7 +204,7 @@ function App() {
 > React와의 강한 의존성이 가지는 문제 예시
 
 ```tsx
-export const Route = createFileRoute("SomePageRange")({
+export const Route = createFileRoute("NeedErrorHandlePageRange")({
   beforeLoad: () => {
     // 에러 핸들링 로직을 여기에서 사용하고 싶음
     errorHandleLogic(); // ✅
@@ -224,7 +226,7 @@ export const Route = createFileRoute("SomePageRange")({
 
 해결 방안의 마지막으로, 중간 계층을 도입하여 외부 함수와 React 로직을 분리하는 방식을 고려하였습니다.
 
-핵심 아이디어는 React 외부의 순수 함수 영역과 React 내부의 상태 관리 로직을 명확하게 분리하는 것입니다.
+핵심 아이디어는 **React 외부의 순수 함수 영역**과 **React 내부의 상태 관리 로직**을 명확하게 분리하는 것입니다.
 
 1. 순수 함수 영역
 
@@ -234,13 +236,13 @@ export const Route = createFileRoute("SomePageRange")({
 
    - 상태 변경을 감지하는 별도의 컴포넌트를 두고 업데이트된 상태 값에 따라 모달 핸들링 및 재시도 로직을 수행합니다.
 
-이러한 구조는 상태 변화에 따른 반응 로직을 감시자(observer)에게 위임함으로써, 전체 코드의 구조를 더욱 깔끔하게 만들고 역할과 책임의 분리를 명확히 할 수 있다는 장점이 있습니다.
+이러한 구조는 상태 변화에 따른 반응 로직을 관찰자(observer)에게 위임함으로써, 전체 코드의 구조를 더욱 깔끔하게 만들고 역할과 책임의 분리를 명확히 할 수 있다는 장점이 있습니다.
 
 그리고 이를 구현하기 위한 방법으로 `Observer Pattern`을 활용하였습니다.
 
 ## Observer Pattern
 
-`Observer Pattern`은 객체의 상태 변화를 관찰하는 관찰자(옵저버)들이 주체(Subject)에 등록되고, 주체의 상태가 변경될 때 등록된 관찰자들에게 자동으로 알림을 전달하는 디자인 패턴입니다.
+`Observer Pattern`은 객체의 상태 변화를 관찰하는 관찰자들이 주체(Subject)에 등록되고, 주체의 상태가 변경될 때 등록된 관찰자들에게 자동으로 알림을 전달하는 디자인 패턴입니다.
 
 아래는 이를 활용해 애러 핸들링을 중앙에서 관리하는 구현 코드의 일부입니다.
 
@@ -251,7 +253,7 @@ class MyErrorMiddleware {
   private listeners: MyErrorListener | null = null;
   private failedMutations: MyMutation[] = [];
 
-  // 관찰자 등록 (단일 리스너 허용)
+  // 관찰자 등록
   public subscribe(listener: MyErrorListener) {
     if (this.listeners) {
       throw new Error("이미 구독되어있는 리스너가 있습니다.");
@@ -268,7 +270,7 @@ class MyErrorMiddleware {
     this.listeners?.(this.failedMutations);
   }
 
-  // 에러 상태 추가
+  // 상태 추가
   public publish(mutation: Mutation, variables: unknown) {
     this.failedMutations = [...this.failedMutations, { mutation, variables }];
     this.notifyListeners();
@@ -285,9 +287,10 @@ class MyErrorMiddleware {
 export const myErrorMiddleware = new MyErrorMiddleware();
 ```
 
-`MyErrorMiddleware` 클래스는 에러 정보를 저장하고, 등록된 옵저버에게 상태 변화를 알리는 역할을 담당합니다.
+주체 역할인 `MyErrorMiddleware` 클래스는 에러 정보를 저장하고, 등록된 옵저버에게 상태 변화를 알리는 역할을 담당합니다.
 
 내부적으로는 `failedMutations` 배열을 활용해 에러가 발생한 `mutation` 정보를 별도로 관리하고 있습니다.
+
 이는 하나의 요청 내에서 여러 개의 API 호출이 발생하거나, 실패한 요청을 추후 재시도해야 하는 상황에 대처하기 위해 내부 상태로 관리되어야하기 때문입니다.
 
 또한, 이 로직은 전역에서 하나의 컴포넌트에게만 에러 상태를 전달하는 것을 의도하여 설계되었기 때문에, 리스너는 단일 컴포넌트만 등록 가능하도록 구현하였습니다.
@@ -297,8 +300,7 @@ export const myErrorMiddleware = new MyErrorMiddleware();
 ### 2. **Error Publisher**
 
 ```tsx
-// 최상위 Provider
-
+// 최상위 Provider의 queryClient
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     onError: (error, variables, _, mutation) => {
@@ -323,7 +325,7 @@ const queryClient = new QueryClient({
 
 Axios를 사용하고 있었기 때문에 Interceptor를 활용해 에러를 처리 할 수 있었지만 Muation Context 내에서 실패한 요청 정보를 명확히 구분짓고자 하는 의도가 있었습니다.
 
-두번째 이유는 **에러전파를 의도적으로 막기 위함**입니다.
+두번째 이유는 **에러전파를 막기 위함**입니다.
 
 조건에 부합하는 에러가 발생하면 각 컴포넌트에서 사용중인 에러 핸들링 로직이 발생시키는것을 막을 필요가 있었고 이를 막고자 에러를 의도적으로 `throw` 하여 에러 전파를 방지했습니다.
 
@@ -398,8 +400,21 @@ return (
 
 ## 결론
 
-이 글을 통해 React 개발자들이 다양한 에러 핸들링 전략을 이해하고, 자신의 프로젝트에 맞는 최적의 해결책을 선택할 수 있기를 바랍니다.
-앞으로도 React 생태계에서 더 나은 에러 처리 방법을 모색하고, 이를 통해 사용자 경험을 개선하는 데 기여하기를 기대합니다.
+`Observer Pattern`을 사용하여 에러 핸들링 문제를 위와 같이 해결할 수 있었고 필요한 경우에만 UI를 업데이트하는 방식으로 효율적인 에러 핸들링을 구현할 수 있었습니다.
+
+이 접근법을 통해 다음과 같은 개선점을 얻을 수 있었습니다:
+
+1. 유지보수성 강화: 에러 핸들링 로직을 중앙에서 관리함으로써, 상태 관리와 비즈니스 로직을 분리할 수 있었습니다. 이를 통해 코드 변경 시 영향 범위를 최소화하고, React Hooks와의 의존성을 줄여 보다 유연한 구조를 만들 수 있었습니다.
+
+2. 일관된 에러 처리 방식: 개별 컴포넌트가 아닌 전역에서 에러를 감지하고 처리함으로써, 중복 코드 없이 일관된 방식으로 예외를 다룰 수 있었습니다.
+
+다만 아래와 같은 부분에서 아쉬운 점이 남아있었습니다.
+
+1. **Mutation 단위의 에러 처리 한계**: 커스텀 에러를 발생시키는 경우, 전역 에러 핸들러에서 이를 감지하지 못하는 상황이 발생할 수 있습니다.
+
+   | 즉 개발자 입장에서는 전역 에러 핸들러 로직을 알고 있어야 하며, 이를 고려하지 않으면 특정 에러가 누락되거나 잘못 처리될 수 있음
+   |
+   | ex) Promise.allSettled 내부에서 커스텀 에러를 발생시키는 경우
 
 ## 참고자료
 
