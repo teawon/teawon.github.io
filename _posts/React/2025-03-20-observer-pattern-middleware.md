@@ -14,7 +14,7 @@ date: 2025-03-20
 last_modified_at: 2025-03-28
 
 header:
-  teaser: https://github.com/user-attachments/assets/b223dd29-90df-4e0b-aff4-1f2cc37d3bf2
+  teaser: https://miro.medium.com/v2/resize:fit:1400/format:webp/1*-3jdNl4AMX-T6pk2P3cqaQ.png
 ---
 
 ## 개요
@@ -47,7 +47,7 @@ React에서는 다양한 방법으로 에러를 전역적으로 핸들링하고 
  <p>3. 정상적으로 수행했다면 기존에 실패했던 api 요청을 재시도 한다.</p>
 </div>
 
-![Image](https://github.com/user-attachments/assets/e5f1a08b-b114-452c-8454-ab9d13ab0207)
+![Image](https://miro.medium.com/v2/resize:fit:1248/format:webp/1*IPG_w2hozbkfPELG3aJSAw.gif)
 
 > (이해를 돕기위한 예시 로직입니다.)
 >
@@ -394,7 +394,7 @@ return (
 
 특정 이슈에 의해 동일한 에러코드가 반환되고 미들웨어에 저장되는 형태의 루프에 빠질 위험이 있기때문입니다.
 
-![Image](https://github.com/user-attachments/assets/f2ef6fb3-efe4-4460-87ea-7e5bd2677d49)
+![Image](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*-3jdNl4AMX-T6pk2P3cqaQ.png){: .center}{: width="600" height="800"}
 
 > 플로우 정리
 
@@ -408,12 +408,11 @@ return (
 
 2. 일관된 에러 처리 방식: 개별 컴포넌트가 아닌 전역에서 에러를 감지하고 처리함으로써, 중복 코드 없이 일관된 방식으로 예외를 다룰 수 있었습니다.
 
-다만 아래와 같은 부분에서 아쉬운 점이 남아있었습니다.
+그러나 아래와 같은 부분에서 개선할 부분이 남아있습니다.
 
 1. **Mutation 단위의 에러 처리 한계**: 커스텀 에러를 발생시키는 경우, 전역 에러 핸들러에서 이를 감지하지 못하는 상황이 발생할 수 있습니다.
 
    | 즉 개발자 입장에서는 전역 에러 핸들러 로직을 알고 있어야 하며, 이를 고려하지 않으면 특정 에러가 누락되거나 잘못 처리될 수 있음
-   |
    | ex) Promise.allSettled 내부에서 커스텀 에러를 발생시키는 경우
 
 ## 참고자료
@@ -421,3 +420,5 @@ return (
 [Observer Pattern](https://www.patterns.dev/vanilla/observer-pattern/)
 
 [React Hooks](https://ko.react.dev/reference/react/hooks)
+
+[React Query Mutacion Cache](https://tanstack.com/query/latest/docs/reference/MutationCache)
