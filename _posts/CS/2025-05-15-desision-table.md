@@ -1,5 +1,5 @@
 ---
-title: "복잡한 분기처리, 직관적인 의사결정 테이블 형태로 표현하기"
+title: "복잡한 분기처리, 의사결정 테이블 형태로 표현하기"
 categories:
   - CS
 tags:
@@ -12,10 +12,10 @@ toc_sticky: true
 toc_label: "목차"
 
 date: 2025-05-15
-last_modified_at: 2025-05-15
+last_modified_at: 2025-05-17
 
 header:
-  teaser: https://miro.medium.com/v2/resize:fit:1400/format:webp/1*-3jdNl4AMX-T6pk2P3cqaQ.png
+  teaser: https://miro.medium.com/v2/resize:fit:1200/format:webp/1*dNBSSuz3f_RbhQ5tU29WNw.gif
 ---
 
 ## 개요
@@ -28,13 +28,13 @@ header:
 
 ## 배경
 
-사내에서는 클라우드 자원을 화면에 표시할 때, 여러 내부 시스템의 상태값을 조합하여 최종적으로 UI에 보여줄 상태로 매핑해야 합니다.
+사내에서는 클라우드 자원을 화면에 표현할 때, 여러 내부 시스템의 상태값을 조합하여 최종적으로 UI에 보여줄 상태로 매핑해야 합니다.
 
 하지만 실제로는 각 자원의 내부 상태와 다양한 속성들이 복합적으로 얽혀 있어, 이 상태 매핑 로직이 매우 복잡하게 구성될 수밖에 없었습니다.
 
-![Image](https://github.com/user-attachments/assets/dab647d7-1eb1-44e1-863b-c4171332aa67)
+![Image](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*MozkFqm3A1Nsie8tJ2mN8w.png)
 
-| 각 상태값에 따른 정책 내용의 일부를 재구성한 예시입니다.
+> 각 상태값에 따른 정책 내용의 일부를 재구성한 예시입니다.
 
 초기 개발 단계에서는 단순히 반복되는 규칙을 찾고, if 문으로 그룹화하여 조건을 처리했습니다.
 
@@ -107,13 +107,19 @@ return {
 
 3. 조건이 누락되거나, 예외 케이스(Edge Case)가 발생했을 때 디버깅이 어려웠으며, 중첩된 로직을 일일이 추적해야만 원인을 파악할 수 있었습니다.
 
+4. 반복을 감안하고 직관성을 위해 모든 케이스를 정의하는 방법도 있지만 코드가 길어지는 문제가 있습니다.
+
+![Image](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*rNFn9bRM3A_gcq6EsjyIJg.png)
+
+> if문 중첩 내부에서 case4는 위 예시의 else문에 해당합니다. 해당 케이스에 어떤 요소들이 있는지 확인하기 위해서는 상위 if문 블록부터 타고 타고 들어야 확인해야하는 번거로움이 있습니다.
+
 <br>
 
 이러한 조건식을 보다 직관적이고 이해하기 쉽게 표현하도록 어떻게 개선할 수 있을까요?
 
 ## 개선 하기
 
-복잡한 조건문 대신, 각 케이스에 대해 정의된 **의사 결정 테이블(Decision Table)** 형태로 표현하면 어떨까요?
+복잡한 조건문 대신, 각 케이스에 대해 정의된 **의사 결정 테이블(Decision Table)** 형태로 표현한다면 이러한 문제를 해결할 수 있다고 생각했습니다.
 
 > 의사결정 테이블이란?
 > 다양한 조건 조합에 따른 결과를 표 형태로 명확하게 정의하는 방법입니다.
@@ -122,7 +128,7 @@ return {
 
 결국 위 로직은 정책 명세서를 기반으로 케이스를 분리하여 처리하고 있습니다.
 
-이러한 정책 역시 테이블 형태로 정의되어있으니, 정책 명세서의 구조에 맞춰 코드에 반영한다면, 각 케이스의 조건과 결과를 보다 직관적으로 확인할 수 있을 것 같다고 생각했습니다.
+이러한 정책 역시 테이블 형태로 정의되어있으니, 정책 명세서의 구조에 맞춰 코드에 반영한다면, 각 케이스의 조건과 결과를 보다 직관적으로 확인할 수 있습니다.
 
 ```ts
 // pseudo code
@@ -183,8 +189,8 @@ export const createDecisionTable = <TKey extends unknown[], TResult>(
 ```ts
 type InputStatus = [Status1Type, Status2Type, Status3Type];
 type ResultStatus = {
-  cluster: keyof typeof stateMap;
-  node: keyof typeof stateMap;
+  cluster: statusType;
+  node: statusType;
 };
 
 const statusMappings: Mapping<InputStatus, ResultStatus>[] = [
@@ -258,6 +264,10 @@ const result = getStatusResult(status1, status2, node);
 
 이 문제를 해결하기 위해 계층적 탐색이 가능한 **Trie(트라이)** 자료구조를 활용했습니다.
 
+<br>
+
+---
+
 #### Trie
 
 Trie는 문자열이나 키 조합을 효율적으로 관리하기 위한 트리 형태의 자료구조입니다.
@@ -290,7 +300,7 @@ root
 
 즉, 접두사 단위로 트리 노드를 이동하며 모든 매핑을 순회하지 않고 키의 길이에 해당하는 필요한 경로만 우선적으로 탐색하게됩니다.
 
-먼저, Trie의 기본 단위인 TrieNode와 이를 관리하는 Trie 클래스를 정의합니다.
+구현을 위해 먼저, Trie의 기본 단위인 TrieNode와 이를 관리하는 Trie 클래스를 정의합니다.
 
 ```tsx
 class TrieNode<TResult> {
@@ -352,7 +362,6 @@ private _searchRecursive(
   }
   return undefined;
 }
-}
 ```
 
 ```tsx
@@ -381,11 +390,15 @@ Trie자료구조를 통해 **키의 각 부분(상태값)**을 계층적으로 �
 
 ## 결론
 
-![Image](https://github.com/user-attachments/assets/ad2b1ba4-5277-404e-9665-6cc2b13cbb51)
+![Image](https://miro.medium.com/v2/resize:fit:1200/format:webp/1*dNBSSuz3f_RbhQ5tU29WNw.gif)
 
-결과적으로 복잡한 if 문을 객체 기반 매핑 테이블로 재구성해, 각 케이스를 훨씬 빠르게 조회할 수 있는 구조로 개선할 수 있었습니다.
+결과적으로 복잡한 if 문을 객체 기반 매핑 테이블로 재구성함으로써, 각 케이스를 더욱 빠르고 직관적으로 조회할 수 있는 구조로 개선할 수 있었습니다.
 
-실제로 개발 중 매핑 정보가 변경되었을 때, 해당 상태값이 어떤 결과를 반환할지 명확하게 파악할 수 있었고, 디버깅 시간 줄어들어 케이스 분기가 많아졌을때 용이한 구조로써 활용될 수 있을거라고 생각합니다.
+물론, if 문이나 switch 문에서도 모든 케이스를 정의한다는 관점으로 접근했을때 동일하게 처리할 수 있지만, 코드가 길어지고 복잡해져 가독성이 떨어진다는 단점이 있습니다.
+
+반면, 객체 매핑 방식은 상태와 결과를 명확하게 정의하기 때문에, 개발 중 매핑 정보가 변경되더라도 해당 상태값이 어떤 결과를 반환할지 쉽게 파악할 수 있습니다.
+
+덕분에 디버깅 시간도 단축되었으며, 케이스 분기가 많아질수록 그 유용성이 더욱 두드러지는 구조라고 생각합니다.😄
 
 ## 참고자료
 
